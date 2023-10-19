@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
+import 'package:flutter_template/l10n/app_localizations_x.dart';
 
 /// [PhotosScreen] content
 
@@ -14,8 +15,9 @@ class PhotosGrid extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       sliver: SliverGrid.builder(
         itemCount: 10,
-        itemBuilder: (context, index) {
-          return const _PhotoCard();
+        itemBuilder: (_, index) {
+          final shadowColor = AppColorScheme.of(context).onBackground;
+          return _PhotoCard(shadowColor);
         },
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -28,13 +30,14 @@ class PhotosGrid extends StatelessWidget {
 }
 
 class _PhotoCard extends StatelessWidget {
-  const _PhotoCard();
+  const _PhotoCard(this.shadowColor);
+
+  final Color shadowColor;
 
   @override
   Widget build(BuildContext context) {
-    const quantity = 14;
+    const numberOfLikes = 14;
     const username = 'Christian';
-    final shadowColor = AppColorScheme.of(context).onBackground;
 
     return Card(
       elevation: 8,
@@ -50,18 +53,18 @@ class _PhotoCard extends StatelessWidget {
             'https://img.goodfon.com/original/1024x768/c/26/merced-river-yosemite-nationa.jpg',
             fit: BoxFit.cover,
           ),
-          const Padding(
-            padding: EdgeInsets.only(left: 20, bottom: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                _TextInfoOnCard(
-                  text: username,
+                const _TextInfoOnCard(
+                  username,
                   isUsernameText: true,
                 ),
-                _TextInfoOnCard(text: '$quantity likes'),
+                _TextInfoOnCard(context.l10n.likesOnCard(numberOfLikes)),
               ],
             ),
           ),
@@ -72,10 +75,7 @@ class _PhotoCard extends StatelessWidget {
 }
 
 class _TextInfoOnCard extends StatelessWidget {
-  const _TextInfoOnCard({
-    required this.text,
-    this.isUsernameText = false,
-  });
+  const _TextInfoOnCard(this.text, {this.isUsernameText = false});
 
   final String text;
   final bool isUsernameText;
