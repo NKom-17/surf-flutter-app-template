@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 
 /// [PhotosScreen] content
@@ -33,7 +34,7 @@ class _PhotoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     const quantity = 14;
     const username = 'Christian';
-    const shadowColor = Colors.black;
+    final shadowColor = AppColorScheme.of(context).onBackground;
 
     return Card(
       elevation: 8,
@@ -49,11 +50,21 @@ class _PhotoCard extends StatelessWidget {
             'https://img.goodfon.com/original/1024x768/c/26/merced-river-yosemite-nationa.jpg',
             fit: BoxFit.cover,
           ),
-          const _TextInfoOnCard(
-            text: username,
-            isUsernameText: true,
+          const Padding(
+            padding: EdgeInsets.only(left: 20, bottom: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _TextInfoOnCard(
+                  text: username,
+                  isUsernameText: true,
+                ),
+                _TextInfoOnCard(text: '$quantity likes'),
+              ],
+            ),
           ),
-          const _TextInfoOnCard(text: '$quantity likes'),
         ],
       ),
     );
@@ -71,16 +82,14 @@ class _TextInfoOnCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: isUsernameText ? 24 : 10,
-      left: 20,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: isUsernameText ? FontWeight.w600 : null,
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
+    final scheme = AppColorScheme.of(context);
+
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: isUsernameText ? FontWeight.w600 : null,
+        color: scheme.onPrimary,
       ),
     );
   }

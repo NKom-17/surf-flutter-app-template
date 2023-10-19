@@ -18,17 +18,12 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
 
   @override
   Widget build(IPhotosScreenWidgetModel wm) {
-    return Scaffold(
-      body: ColoredBox(
-        color: wm.colorScheme.background,
-        child: const CustomScrollView(
-          slivers: [
-            PhotosGrid(),
-          ],
-        ),
+    return const Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          PhotosGrid(),
+        ],
       ),
     );
   }
 }
-
-
