@@ -12,7 +12,7 @@ class PhotosGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       sliver: SliverGrid.builder(
         itemCount: 10,
         itemBuilder: (_, index) {
