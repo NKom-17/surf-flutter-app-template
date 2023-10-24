@@ -141,3 +141,63 @@ class _FlexibleSpaceBar extends StatelessWidget {
     );
   }
 }
+
+class _PhotosAppBar extends StatelessWidget {
+  const _PhotosAppBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+
+    return SliverAppBar(
+      pinned: true,
+      expandedHeight: mediaQuery.size.height * 0.1,
+      flexibleSpace: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxHeight = constraints.biggest.height;
+              final isNotExpanded =
+                  maxHeight == mediaQuery.padding.top + kToolbarHeight;
+
+              return _FlexibleSpaceBar(isNotExpanded: isNotExpanded);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FlexibleSpaceBar extends StatelessWidget {
+  const _FlexibleSpaceBar({required this.isNotExpanded});
+
+  final bool isNotExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = AppColorScheme.of(context);
+    final textTheme = AppTextTheme.of(context);
+
+    return FlexibleSpaceBar(
+      centerTitle: isNotExpanded,
+      expandedTitleScale: 1.2,
+      titlePadding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 10,
+      ),
+      title: AnimatedAlign(
+        duration: const Duration(milliseconds: 200),
+        alignment:
+            isNotExpanded ? Alignment.bottomCenter : Alignment.bottomLeft,
+        child: Text(
+          context.l10n.photosScreenTitle,
+          style: textTheme.bold20.copyWith(
+            color: scheme.onBackground,
+          ),
+        ),
+      ),
+    );
+  }
+}
