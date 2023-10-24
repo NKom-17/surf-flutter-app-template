@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/assets/text/text_extention.dart';
 import 'package:flutter_template/features/navigation/domain/entity/app_route_names.dart';
+import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_widget_model.dart';
 import 'package:flutter_template/features/photos/widgets/photos_grid.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
+import 'package:union_state/union_state.dart';
 
 /// Main widget for PhotosScreen feature.
 @RoutePage(
@@ -23,13 +25,56 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
 
   @override
   Widget build(IPhotosScreenWidgetModel wm) {
-    return const Scaffold(
+    return Scaffold(
       extendBodyBehindAppBar: true,
-      body: CustomScrollView(
-        slivers: [
-          _PhotosAppBar(),
-          PhotosGrid(),
-        ],
+      body: UnionStateListenableBuilder<List<PhotosModel?>>(
+        unionStateListenable: wm.dataState,
+        builder: (_, data) {
+          return CustomScrollView(
+            slivers: [
+              const _PhotosAppBar(),
+              PhotosGrid(data),
+            ],
+          );
+        },
+        loadingBuilder: (_, lastData) {
+          return CustomScrollView(
+            slivers: [
+              const _PhotosAppBar(),
+              PhotosGrid(lastData),
+              SliverFillRemaining(
+                child: lastData != null && lastData.isNotEmpty
+                    ? const SizedBox(
+                        height: 80,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+              ),
+            ],
+          );
+        },
+        failureBuilder: (context, exception, lastData) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(exception.toString()),
+              ),
+            );
+          return CustomScrollView(
+            slivers: [
+              const _PhotosAppBar(),
+              Visibility(
+                visible: lastData != null && lastData.isNotEmpty,
+                child: PhotosGrid(lastData),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -84,7 +129,7 @@ class _FlexibleSpaceBar extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         alignment: Alignment(
           isPinned ? 0 : -1,
-          isPinned ? 1 : 1,
+          1,
         ),
         child: Text(
           context.l10n.photosScreenTitle,
