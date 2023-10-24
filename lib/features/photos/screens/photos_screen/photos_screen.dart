@@ -24,7 +24,6 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
   @override
   Widget build(IPhotosScreenWidgetModel wm) {
     return const Scaffold(
-      extendBodyBehindAppBar: true,
       body: CustomScrollView(
         slivers: [
           _PhotosAppBar(),
@@ -51,10 +50,10 @@ class _PhotosAppBar extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxHeight = constraints.biggest.height;
-              final isPinned =
+              final isNotExpanded =
                   maxHeight == mediaQuery.padding.top + kToolbarHeight;
 
-              return _FlexibleSpaceBar(isPinned: isPinned);
+              return _FlexibleSpaceBar(isNotExpanded: isNotExpanded);
             },
           ),
         ),
@@ -64,9 +63,9 @@ class _PhotosAppBar extends StatelessWidget {
 }
 
 class _FlexibleSpaceBar extends StatelessWidget {
-  const _FlexibleSpaceBar({required this.isPinned});
+  const _FlexibleSpaceBar({required this.isNotExpanded});
 
-  final bool isPinned;
+  final bool isNotExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +73,7 @@ class _FlexibleSpaceBar extends StatelessWidget {
     final textTheme = AppTextTheme.of(context);
 
     return FlexibleSpaceBar(
-      centerTitle: isPinned,
+      centerTitle: isNotExpanded,
       expandedTitleScale: 1.2,
       titlePadding: const EdgeInsets.symmetric(
         horizontal: 20,
@@ -82,10 +81,8 @@ class _FlexibleSpaceBar extends StatelessWidget {
       ),
       title: AnimatedAlign(
         duration: const Duration(milliseconds: 200),
-        alignment: Alignment(
-          isPinned ? 0 : -1,
-          isPinned ? 1 : 1,
-        ),
+        alignment:
+            isNotExpanded ? Alignment.bottomCenter : Alignment.bottomLeft,
         child: Text(
           context.l10n.photosScreenTitle,
           style: textTheme.bold20.copyWith(
