@@ -10,8 +10,6 @@ void main() {
     buildType: BuildType.debug,
     config: AppConfig(
       url: Url.testUrl,
-      baseQueryUrl: Url.baseQueryUrl,
-      baseQueryClientId: Url.baseQueryClientId,
     ),
   );
 
