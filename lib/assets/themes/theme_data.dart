@@ -28,10 +28,16 @@ abstract class AppThemeData {
       ),
     ),
     appBarTheme: AppBarTheme(
-      color: _lightColorScheme.primary,
+      backgroundColor: _lightColorScheme.background.withOpacity(0.85),
       elevation: 0,
+      titleSpacing: 0,
+      titleTextStyle: TextStyle(
+        color: _lightColorScheme.onBackground,
+        fontSize: _textTheme.bold20.fontSize,
+        fontWeight: _textTheme.bold20.fontWeight,
+      ),
       iconTheme: IconThemeData(
-        color: _lightColorScheme.onPrimary,
+        color: _lightColorScheme.onBackground,
       ),
     ),
     scaffoldBackgroundColor: _lightColorScheme.background,
@@ -61,10 +67,16 @@ abstract class AppThemeData {
       ),
     ),
     appBarTheme: AppBarTheme(
-      color: _lightColorScheme.primary,
+      color: _darkColorScheme.background.withOpacity(0.85),
       elevation: 0,
+      titleSpacing: 0,
+      titleTextStyle: TextStyle(
+        color: _darkColorScheme.onBackground,
+        fontSize: _textTheme.bold20.fontSize,
+        fontWeight: _textTheme.bold20.fontWeight,
+      ),
       iconTheme: IconThemeData(
-        color: _lightColorScheme.onPrimary,
+        color: _darkColorScheme.onBackground,
       ),
     ),
     scaffoldBackgroundColor: _darkColorScheme.background,
