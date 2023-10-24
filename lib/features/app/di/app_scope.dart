@@ -6,6 +6,7 @@ import 'package:flutter_template/config/environment/environment.dart';
 import 'package:flutter_template/features/common/service/theme/theme_service.dart';
 import 'package:flutter_template/features/common/service/theme/theme_service_impl.dart';
 import 'package:flutter_template/features/navigation/service/router.dart';
+import 'package:flutter_template/features/photos/domain/repository/photos_repository.dart';
 import 'package:flutter_template/persistence/storage/theme_storage/theme_storage.dart';
 import 'package:flutter_template/persistence/storage/theme_storage/theme_storage_impl.dart';
 import 'package:flutter_template/util/default_error_handler.dart';
@@ -21,6 +22,7 @@ class AppScope implements IAppScope {
   late final ErrorHandler _errorHandler;
   late final AppRouter _router;
   late final IThemeService _themeService;
+  late final PhotosRepository _photosRepository;
 
   @override
   late VoidCallback applicationRebuilder;
@@ -40,6 +42,9 @@ class AppScope implements IAppScope {
   @override
   SharedPreferences get sharedPreferences => _sharedPreferences;
 
+  @override
+  PhotosRepository get photosRepository => _photosRepository;
+
   late IThemeModeStorage _themeModeStorage;
 
   /// Create an instance [AppScope].
@@ -48,6 +53,7 @@ class AppScope implements IAppScope {
     final additionalInterceptors = <Interceptor>[];
 
     _dio = _initDio(additionalInterceptors);
+    _photosRepository = PhotosRepository(_dio);
     _errorHandler = DefaultErrorHandler();
     _router = AppRouter.instance();
     _themeModeStorage = ThemeModeStorageImpl(_sharedPreferences);
@@ -56,7 +62,8 @@ class AppScope implements IAppScope {
   @override
   Future<void> initTheme() async {
     final theme =
-        await ThemeModeStorageImpl(_sharedPreferences).getThemeMode() ?? _themeByDefault;
+        await ThemeModeStorageImpl(_sharedPreferences).getThemeMode() ??
+            _themeByDefault;
     _themeService = ThemeServiceImpl(theme);
     _themeService.addListener(_onThemeModeChanged);
   }
@@ -67,7 +74,7 @@ class AppScope implements IAppScope {
     final dio = Dio();
 
     dio.options
-      ..baseUrl = Environment.instance().config.url
+      ..baseUrl = Environment.instance().config.baseQueryUrl
       ..connectTimeout = timeout
       ..receiveTimeout = timeout
       ..sendTimeout = timeout;
@@ -125,4 +132,7 @@ abstract class IAppScope {
 
   /// Shared preferences.
   SharedPreferences get sharedPreferences;
+
+  /// Photos repository.
+  PhotosRepository get photosRepository;
 }

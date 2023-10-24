@@ -1,5 +1,5 @@
 {
-  "likesOnCard": "{count, plural, =1{{count} лайк} few{{count} лайка} many{{count} лайков} other{{count} лайков}}",
+  "likesOnCard": "{count, plural, =1{{count} like} other{{count} likes}}",
   "@likesOnCard": {
     "placeholders": {
       "count": {
