@@ -10,7 +10,7 @@ void main() {
     buildType: BuildType.qa,
     config: AppConfig(
       url: Url.testUrl,
-      photosBaseUrl: Url.photosBaseUrl,
+      photosUrl: Url.photosUrl,
       clientIdOfQueryPhotos: Url.clientIdOfQueryPhotos,
     ),
   );

@@ -74,7 +74,7 @@ class AppScope implements IAppScope {
     final dio = Dio();
 
     dio.options
-      ..baseUrl = Environment.instance().config.photosBaseUrl
+      ..baseUrl = Environment.instance().config.photosUrl
       ..connectTimeout = timeout
       ..receiveTimeout = timeout
       ..sendTimeout = timeout;

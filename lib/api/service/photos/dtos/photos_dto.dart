@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_template/api/service/photos/dtos/urls_data_dto.dart';
 import 'package:flutter_template/api/service/photos/dtos/user_data_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -5,6 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'photos_dto.g.dart';
 
 /// Main DTO model for json processing.
+@immutable
 @JsonSerializable()
 class PhotosDTO {
   /// Links to images
@@ -24,7 +26,7 @@ class PhotosDTO {
   final String blurImage;
 
   /// Create an instance [PhotosDTO].
-  PhotosDTO({
+  const PhotosDTO({
     required this.urls,
     required this.user,
     required this.likes,

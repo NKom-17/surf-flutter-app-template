@@ -10,7 +10,7 @@ void main() {
     buildType: BuildType.release,
     config: AppConfig(
       url: Url.prodUrl,
-      photosBaseUrl: Url.photosBaseUrl,
+      photosUrl: Url.photosUrl,
       clientIdOfQueryPhotos: Url.clientIdOfQueryPhotos,
     ),
   );

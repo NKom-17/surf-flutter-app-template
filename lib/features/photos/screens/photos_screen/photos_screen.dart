@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
@@ -28,53 +29,50 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
     return Scaffold(
       body: UnionStateListenableBuilder<List<PhotosModel>>(
         unionStateListenable: wm.dataState,
-        builder: (context, data) {
-          return CustomScrollView(
-            slivers: [
-              const _PhotosAppBar(),
-              PhotosGrid(data),
-            ],
-          );
+        builder: (context, data) => _BuilderView(data),
+        loadingBuilder: (_, lastData) {
+          return _BuilderView(lastData, isLoadingBuilder: true);
         },
-        loadingBuilder: (_, lastData) => _LoadingBuilderView(lastData),
         failureBuilder: (context, exception, lastData) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: Text(exception.toString()),
+                  content: Text(
+                    exception is SocketException
+                        ? context.l10n.networkErrorMessage
+                        : exception.toString(),
+                  ),
                 ),
               );
           });
-          return CustomScrollView(
-            physics:
-                lastData != null ? null : const NeverScrollableScrollPhysics(),
-            slivers: [
-              const _PhotosAppBar(),
-              PhotosGrid(lastData),
-            ],
-          );
+          return _BuilderView(lastData);
         },
       ),
     );
   }
 }
 
-class _LoadingBuilderView extends StatelessWidget {
-  const _LoadingBuilderView(this.lastData);
+class _BuilderView extends StatelessWidget {
+  const _BuilderView(this.data, {this.isLoadingBuilder = false});
 
-  final List<PhotosModel>? lastData;
+  final List<PhotosModel>? data;
+  final bool isLoadingBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: CustomScrollView(
-        slivers: [
-          const _PhotosAppBar(),
-          PhotosGrid(lastData),
-          SliverFillRemaining(
-            child: lastData != null && lastData!.isNotEmpty
+    final hasData = data != null && data!.isNotEmpty;
+    return CustomScrollView(
+      physics: hasData ? null : const NeverScrollableScrollPhysics(),
+      slivers: [
+        const _PhotosAppBar(),
+        PhotosGrid(data),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Visibility(
+            visible: isLoadingBuilder,
+            child: hasData
                 ? const SizedBox(
                     height: 80,
                     child: Center(
@@ -85,8 +83,8 @@ class _LoadingBuilderView extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

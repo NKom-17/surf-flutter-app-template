@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter_template/features/app/di/app_scope.dart';
@@ -11,7 +9,7 @@ import 'package:union_state/union_state.dart';
 /// Model for [PhotosScreen].
 class PhotosScreenModel extends ElementaryModel {
   /// Create an instance [PhotosScreenModel].
-  PhotosScreenModel(this._scope, this._networkErrorMessage) {
+  PhotosScreenModel(this._scope) {
     _photosRepository = PhotosRepository(_scope.dio);
   }
 
@@ -19,7 +17,6 @@ class PhotosScreenModel extends ElementaryModel {
   final dataState = UnionStateNotifier<List<PhotosModel>>.loading();
   final IAppScope _scope;
   late final PhotosRepository _photosRepository;
-  final String _networkErrorMessage;
   int _page = 1;
 
   /// Page loading
@@ -31,11 +28,7 @@ class PhotosScreenModel extends ElementaryModel {
       response.isNotEmpty ? dataState.content(response) : dataState.failure();
       _page++;
     } on DioError catch (e) {
-      if (e.type == DioErrorType.unknown && e.error is SocketException) {
-        dataState.failure(Exception(_networkErrorMessage));
-      } else {
-        dataState.failure(Exception(e.error));
-      }
+      dataState.failure(e.error as Exception?, dataState.value.data);
     }
   }
 }

@@ -6,8 +6,8 @@ class AppConfig {
   /// Proxy url.
   final String? proxyUrl;
 
-  /// The base URL of the photos.
-  final String photosBaseUrl;
+  /// Photos url.
+  final String photosUrl;
 
   /// Client ID parameter when requesting photos.
   final String clientIdOfQueryPhotos;
@@ -15,7 +15,7 @@ class AppConfig {
   /// Create an instance [AppConfig].
   AppConfig({
     required this.url,
-    required this.photosBaseUrl,
+    required this.photosUrl,
     required this.clientIdOfQueryPhotos,
     this.proxyUrl,
   });
@@ -30,7 +30,7 @@ class AppConfig {
       AppConfig(
         url: url ?? this.url,
         proxyUrl: proxyUrl ?? this.proxyUrl,
-        photosBaseUrl: photosBaseUrl ?? this.photosBaseUrl,
+        photosUrl: photosBaseUrl ?? this.photosUrl,
         clientIdOfQueryPhotos:
             clientIdOfQueryPhotos ?? this.clientIdOfQueryPhotos,
       );

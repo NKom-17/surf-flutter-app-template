@@ -1,6 +1,7 @@
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/features/app/di/app_scope.dart';
 import 'package:flutter_template/features/common/mixin/theme_mixin.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
@@ -14,9 +15,9 @@ import 'package:union_state/union_state.dart';
 PhotosScreenWidgetModel photosScreenWmFactory(
   BuildContext context,
 ) {
-  final networkErrorMessage = context.l10n.networkErrorMessage;
+  // final networkErrorMessage = context.l10n.networkErrorMessage;
   final scope = context.read<IAppScope>();
-  final model = PhotosScreenModel(scope, networkErrorMessage);
+  final model = PhotosScreenModel(scope);
   return PhotosScreenWidgetModel(model);
 }
 
@@ -33,9 +34,12 @@ class PhotosScreenWidgetModel
       model.dataState;
 
   @override
+  AppLocalizations get l10n => context.l10n;
+
+  @override
   void initWidgetModel() {
-    model.loadPage();
     super.initWidgetModel();
+    model.loadPage();
   }
 
   /// Load the next page
@@ -49,4 +53,7 @@ abstract class IPhotosScreenWidgetModel extends IWidgetModel
     with ThemeIModelMixin {
   /// Interface for data with a loading state
   ValueListenable<UnionState<List<PhotosModel>>> get dataState;
+
+  /// Localization strings.
+  AppLocalizations get l10n;
 }
