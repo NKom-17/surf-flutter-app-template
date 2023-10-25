@@ -18,15 +18,18 @@ class PhotosScreenModel extends ElementaryModel {
   final IAppScope _scope;
   late final PhotosRepository _photosRepository;
   int _page = 1;
+  bool _contentIsOver = false;
 
   /// Page loading
   Future<void> loadPage() async {
     try {
+      if (_contentIsOver) return;
       dataState.loading(dataState.value.data);
 
       final response = await _photosRepository.loadingPage(_page);
-      response.isNotEmpty ? dataState.content(response) : dataState.failure();
-      _page++;
+      dataState.content(response);
+
+      response.isNotEmpty ? _page++ : _contentIsOver = true;
     } on DioError catch (e) {
       dataState.failure(e.error as Exception?, dataState.value.data);
     }

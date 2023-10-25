@@ -35,6 +35,5 @@ class PhotosDTO {
   });
 
   /// Deserialization of the received data
-  factory PhotosDTO.fromJson(Map<String, dynamic> json) =>
-      _$PhotosDTOFromJson(json);
+  factory PhotosDTO.fromJson(Map<String, dynamic> json) => _$PhotosDTOFromJson(json);
 }

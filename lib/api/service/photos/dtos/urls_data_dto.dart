@@ -14,6 +14,5 @@ class UrlsDataDTO {
   const UrlsDataDTO(this.regular);
 
   /// Deserialization of the received data
-  factory UrlsDataDTO.fromJson(Map<String, dynamic> json) =>
-      _$UrlsDataDTOFromJson(json);
+  factory UrlsDataDTO.fromJson(Map<String, dynamic> json) => _$UrlsDataDTOFromJson(json);
 }

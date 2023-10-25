@@ -3,7 +3,7 @@ import 'package:flutter_template/config/environment/environment.dart';
 /// Server urls.
 abstract class Url {
   /// TRest url.
-  static String get testUrl => 'http://uinames.com/api/';
+  static String get testUrl => 'https://api.unsplash.com';
 
   /// Prod url.
   static String get prodUrl => 'https://prod.surfstudio.ru/api';
@@ -13,9 +13,6 @@ abstract class Url {
 
   /// Base url.
   static String get baseUrl => Environment.instance().config.url;
-
-  /// Photos url.
-  static String get photosUrl => 'https://api.unsplash.com';
 
   /// Client ID for requesting photos.
   static String get clientIdOfQueryPhotos =>

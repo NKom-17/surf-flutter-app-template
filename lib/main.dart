@@ -7,10 +7,9 @@ import 'package:flutter_template/runner.dart';
 /// Main entry point of app.
 void main() {
   Environment.init(
-    buildType: BuildType.release,
+    buildType: BuildType.debug,
     config: AppConfig(
-      url: Url.prodUrl,
-      photosUrl: Url.photosUrl,
+      url: Url.testUrl,
       clientIdOfQueryPhotos: Url.clientIdOfQueryPhotos,
     ),
   );

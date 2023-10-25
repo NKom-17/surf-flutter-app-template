@@ -61,9 +61,7 @@ class AppScope implements IAppScope {
 
   @override
   Future<void> initTheme() async {
-    final theme =
-        await ThemeModeStorageImpl(_sharedPreferences).getThemeMode() ??
-            _themeByDefault;
+    final theme = await ThemeModeStorageImpl(_sharedPreferences).getThemeMode() ?? _themeByDefault;
     _themeService = ThemeServiceImpl(theme);
     _themeService.addListener(_onThemeModeChanged);
   }
@@ -74,13 +72,12 @@ class AppScope implements IAppScope {
     final dio = Dio();
 
     dio.options
-      ..baseUrl = Environment.instance().config.photosUrl
+      ..baseUrl = Environment.instance().config.url
       ..connectTimeout = timeout
       ..receiveTimeout = timeout
       ..sendTimeout = timeout;
 
-    (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-        (client) {
+    (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
       final proxyUrl = Environment.instance().config.proxyUrl;
       if (proxyUrl != null && proxyUrl.isNotEmpty) {
         client
@@ -98,8 +95,7 @@ class AppScope implements IAppScope {
     dio.interceptors.addAll(additionalInterceptors);
 
     if (Environment.instance().isDebug) {
-      dio.interceptors
-          .add(LogInterceptor(requestBody: true, responseBody: true));
+      dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
     }
 
     return dio;

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
@@ -34,19 +33,7 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
           return _BuilderView(lastData, isLoadingBuilder: true);
         },
         failureBuilder: (context, exception, lastData) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text(
-                    exception is SocketException
-                        ? context.l10n.networkErrorMessage
-                        : exception.toString(),
-                  ),
-                ),
-              );
-          });
+          wm.showErrorSnackBar(exception);
           return _BuilderView(lastData);
         },
       ),
@@ -105,8 +92,7 @@ class _PhotosAppBar extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxHeight = constraints.biggest.height;
-              final isNotExpanded =
-                  maxHeight == mediaQuery.padding.top + kToolbarHeight;
+              final isNotExpanded = maxHeight == mediaQuery.padding.top + kToolbarHeight;
 
               return _FlexibleSpaceBar(isNotExpanded: isNotExpanded);
             },
@@ -136,8 +122,7 @@ class _FlexibleSpaceBar extends StatelessWidget {
       ),
       title: AnimatedAlign(
         duration: const Duration(milliseconds: 200),
-        alignment:
-            isNotExpanded ? Alignment.bottomCenter : Alignment.bottomLeft,
+        alignment: isNotExpanded ? Alignment.bottomCenter : Alignment.bottomLeft,
         child: Text(
           context.l10n.photosScreenTitle,
           style: textTheme.bold20.copyWith(

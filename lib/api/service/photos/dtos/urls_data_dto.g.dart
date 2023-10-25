@@ -10,7 +10,6 @@ UrlsDataDTO _$UrlsDataDTOFromJson(Map<String, dynamic> json) => UrlsDataDTO(
       json['regular'] as String,
     );
 
-Map<String, dynamic> _$UrlsDataDTOToJson(UrlsDataDTO instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UrlsDataDTOToJson(UrlsDataDTO instance) => <String, dynamic>{
       'regular': instance.regular,
     };

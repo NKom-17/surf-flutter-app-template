@@ -18,7 +18,7 @@ class PhotosGrid extends StatelessWidget {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       sliver: SliverGrid.builder(
-        itemCount: 10,
+        itemCount: models?.length,
         itemBuilder: (_, index) {
           final model = models?[index];
           if (model != null) return _PhotoCard(model);
@@ -91,9 +91,7 @@ class _TextInfoOnCard extends StatelessWidget {
       text,
       style: textTheme.regular12.copyWith(
         color: scheme.onPrimary,
-        fontWeight: isUsernameText
-            ? textTheme.bold12.fontWeight
-            : textTheme.regular12.fontWeight,
+        fontWeight: isUsernameText ? textTheme.bold12.fontWeight : textTheme.regular12.fontWeight,
       ),
     );
   }

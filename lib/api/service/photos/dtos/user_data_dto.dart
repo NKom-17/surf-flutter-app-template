@@ -14,6 +14,5 @@ class UserDataDTO {
   const UserDataDTO(this.username);
 
   /// Deserialization of the received data
-  factory UserDataDTO.fromJson(Map<String, dynamic> json) =>
-      _$UserDataDTOFromJson(json);
+  factory UserDataDTO.fromJson(Map<String, dynamic> json) => _$UserDataDTOFromJson(json);
 }

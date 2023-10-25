@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/features/app/di/app_scope.dart';
 import 'package:flutter_template/features/common/mixin/theme_mixin.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
@@ -15,26 +16,20 @@ import 'package:union_state/union_state.dart';
 PhotosScreenWidgetModel photosScreenWmFactory(
   BuildContext context,
 ) {
-  // final networkErrorMessage = context.l10n.networkErrorMessage;
   final scope = context.read<IAppScope>();
   final model = PhotosScreenModel(scope);
   return PhotosScreenWidgetModel(model);
 }
 
 /// Widget model for [PhotosScreen].
-class PhotosScreenWidgetModel
-    extends WidgetModel<PhotosScreen, PhotosScreenModel>
+class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenModel>
     with ThemeWMMixin
     implements IPhotosScreenWidgetModel {
   /// Create an instance [PhotosScreenWidgetModel].
   PhotosScreenWidgetModel(super._model);
 
   @override
-  ValueListenable<UnionState<List<PhotosModel>>> get dataState =>
-      model.dataState;
-
-  @override
-  AppLocalizations get l10n => context.l10n;
+  ValueListenable<UnionState<List<PhotosModel>>> get dataState => model.dataState;
 
   @override
   void initWidgetModel() {
@@ -42,18 +37,34 @@ class PhotosScreenWidgetModel
     model.loadPage();
   }
 
-  /// Load the next page
+  /// Load the next page.
   void loadNextPage() {
     model.loadPage();
+  }
+
+  @override
+  void showErrorSnackBar(Exception? exception) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              exception is SocketException
+                  ? context.l10n.networkErrorMessage
+                  : exception.toString(),
+            ),
+          ),
+        );
+    });
   }
 }
 
 /// Interface of [PhotosScreenWidgetModel].
-abstract class IPhotosScreenWidgetModel extends IWidgetModel
-    with ThemeIModelMixin {
-  /// Interface for data with a loading state
+abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMixin {
+  /// Interface for data with a loading state.
   ValueListenable<UnionState<List<PhotosModel>>> get dataState;
 
-  /// Localization strings.
-  AppLocalizations get l10n;
+  /// Show a snack bar with an error.
+  void showErrorSnackBar(Exception? exception) {}
 }
