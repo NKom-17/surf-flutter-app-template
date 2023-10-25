@@ -21,7 +21,7 @@ class PhotosGrid extends StatelessWidget {
         itemCount: 10,
         itemBuilder: (_, index) {
           final model = models?[index];
-          if(model != null)return _PhotoCard(model);
+          if (model != null) return _PhotoCard(model);
           return null;
         },
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -41,11 +41,9 @@ class _PhotoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardShadowColor = int.parse('0xFF${model.shadowColor.substring(1)}');
-
     return Card(
       elevation: 10,
-      shadowColor: Color(cardShadowColor),
+      shadowColor: Color(model.shadowColor),
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),

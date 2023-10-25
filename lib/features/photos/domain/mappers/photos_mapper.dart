@@ -9,7 +9,7 @@ extension PhotosDTOToDomain on PhotosDTO {
       photo: urls.regular,
       username: user.username,
       numberOfLikes: likes,
-      shadowColor: color,
+      shadowColor: int.parse('0xFF${color.substring(1)}'),
       blurImage: blurImage,
     );
   }

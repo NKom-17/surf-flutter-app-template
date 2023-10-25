@@ -12,13 +12,13 @@ class PhotosRepository {
   PhotosRepository(this._dio);
 
   /// Page loading
-  Future<List<PhotosModel?>> loadingPage(String page) async {
+  Future<List<PhotosModel>> loadingPage(int page) async {
     const urlPhotos = '/photos';
     final response = await _dio.get(
       urlPhotos,
       queryParameters: {
         'page': page,
-        'client_id': Environment.instance().config.baseQueryClientId,
+        'client_id': Environment.instance().config.clientIdOfQueryPhotos,
       },
     );
 
@@ -28,10 +28,9 @@ class PhotosRepository {
       dtos.add(PhotosDTO.fromJson(data as Map<String, dynamic>));
     }
 
-    final listPhotosModels = <PhotosModel>[];
-    for (final dto in dtos) {
-      listPhotosModels.add(dto.toDomain());
-    }
+    final listPhotosModels = <PhotosModel>[
+      ...dtos.map((element) => element.toDomain()),
+    ];
 
     return listPhotosModels;
   }

@@ -1,8 +1,10 @@
+import 'package:flutter_template/api/service/photos/dtos/urls_data_dto.dart';
+import 'package:flutter_template/api/service/photos/dtos/user_data_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'photos_dto.g.dart';
 
-/// DTO model for json processing.
+/// Main DTO model for json processing.
 @JsonSerializable()
 class PhotosDTO {
   /// Links to images
@@ -33,32 +35,4 @@ class PhotosDTO {
   /// Deserialization of the received data
   factory PhotosDTO.fromJson(Map<String, dynamic> json) =>
       _$PhotosDTOFromJson(json);
-}
-
-/// DTO model of image links.
-@JsonSerializable()
-class UrlsDataDTO {
-  /// Image
-  final String regular;
-
-  /// Create an instance [UrlsDataDTO].
-  UrlsDataDTO(this.regular);
-
-  /// Deserialization of the received data
-  factory UrlsDataDTO.fromJson(Map<String, dynamic> json) =>
-      _$UrlsDataDTOFromJson(json);
-}
-
-/// The DTO model of information about the author
-@JsonSerializable()
-class UserDataDTO {
-  /// The author of the photo
-  final String username;
-
-  /// Create an instance [UserDataDTO].
-  UserDataDTO(this.username);
-
-  /// Deserialization of the received data
-  factory UserDataDTO.fromJson(Map<String, dynamic> json) =>
-      _$UserDataDTOFromJson(json);
 }

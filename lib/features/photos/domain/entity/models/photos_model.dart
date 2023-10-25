@@ -19,7 +19,7 @@ class PhotosModel {
   final int numberOfLikes;
 
   /// Shadow color of the photo
-  final String shadowColor;
+  final int shadowColor;
 
   /// Blur when uploading a photo
   final String blurImage;

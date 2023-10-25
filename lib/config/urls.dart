@@ -14,10 +14,10 @@ abstract class Url {
   /// Base url.
   static String get baseUrl => Environment.instance().config.url;
 
-  /// Base query url.
-  static String get baseQueryUrl => 'https://api.unsplash.com';
+  /// The base url of the photos.
+  static String get photosBaseUrl => 'https://api.unsplash.com';
 
-  /// Base query client id.
-  static String get baseQueryClientId =>
+  /// Client ID for requesting photos.
+  static String get clientIdOfQueryPhotos =>
       '896d4f52c589547b2134bd75ed48742db637fa51810b49b607e37e46ab2c0043';
 }

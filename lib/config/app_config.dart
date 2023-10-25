@@ -6,17 +6,17 @@ class AppConfig {
   /// Proxy url.
   final String? proxyUrl;
 
-  /// Base query url to the API.
-  final String baseQueryUrl;
+  /// The base URL of the photos.
+  final String photosBaseUrl;
 
-  /// Client ID for api requests.
-  final String baseQueryClientId;
+  /// Client ID parameter when requesting photos.
+  final String clientIdOfQueryPhotos;
 
   /// Create an instance [AppConfig].
   AppConfig({
     required this.url,
-    required this.baseQueryUrl,
-    required this.baseQueryClientId,
+    required this.photosBaseUrl,
+    required this.clientIdOfQueryPhotos,
     this.proxyUrl,
   });
 
@@ -24,13 +24,14 @@ class AppConfig {
   AppConfig copyWith({
     String? url,
     String? proxyUrl,
-    String? baseQueryUrl,
-    String? baseQueryClientId,
+    String? photosBaseUrl,
+    String? clientIdOfQueryPhotos,
   }) =>
       AppConfig(
         url: url ?? this.url,
         proxyUrl: proxyUrl ?? this.proxyUrl,
-        baseQueryUrl: baseQueryUrl ?? this.baseQueryUrl,
-        baseQueryClientId: baseQueryClientId ?? this.baseQueryClientId,
+        photosBaseUrl: photosBaseUrl ?? this.photosBaseUrl,
+        clientIdOfQueryPhotos:
+            clientIdOfQueryPhotos ?? this.clientIdOfQueryPhotos,
       );
 }

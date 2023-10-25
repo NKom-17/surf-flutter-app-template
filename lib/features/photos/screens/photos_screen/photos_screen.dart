@@ -26,10 +26,9 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
   @override
   Widget build(IPhotosScreenWidgetModel wm) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: UnionStateListenableBuilder<List<PhotosModel?>>(
+      body: UnionStateListenableBuilder<List<PhotosModel>>(
         unionStateListenable: wm.dataState,
-        builder: (_, data) {
+        builder: (context, data) {
           return CustomScrollView(
             slivers: [
               const _PhotosAppBar(),
@@ -37,41 +36,23 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
             ],
           );
         },
-        loadingBuilder: (_, lastData) {
+        loadingBuilder: (_, lastData) => _LoadingBuilderView(lastData),
+        failureBuilder: (context, exception, lastData) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Text(exception.toString()),
+                ),
+              );
+          });
           return CustomScrollView(
+            physics:
+                lastData != null ? null : const NeverScrollableScrollPhysics(),
             slivers: [
               const _PhotosAppBar(),
               PhotosGrid(lastData),
-              SliverFillRemaining(
-                child: lastData != null && lastData.isNotEmpty
-                    ? const SizedBox(
-                        height: 80,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-              ),
-            ],
-          );
-        },
-        failureBuilder: (context, exception, lastData) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(exception.toString()),
-              ),
-            );
-          return CustomScrollView(
-            slivers: [
-              const _PhotosAppBar(),
-              Visibility(
-                visible: lastData != null && lastData.isNotEmpty,
-                child: PhotosGrid(lastData),
-              ),
             ],
           );
         },
@@ -80,63 +61,31 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
   }
 }
 
-class _PhotosAppBar extends StatelessWidget {
-  const _PhotosAppBar();
+class _LoadingBuilderView extends StatelessWidget {
+  const _LoadingBuilderView(this.lastData);
+
+  final List<PhotosModel>? lastData;
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-
-    return SliverAppBar(
-      pinned: true,
-      expandedHeight: mediaQuery.size.height * 0.1,
-      flexibleSpace: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final maxHeight = constraints.biggest.height;
-              final isPinned =
-                  maxHeight == mediaQuery.padding.top + kToolbarHeight;
-
-              return _FlexibleSpaceBar(isPinned: isPinned);
-            },
+    return Center(
+      child: CustomScrollView(
+        slivers: [
+          const _PhotosAppBar(),
+          PhotosGrid(lastData),
+          SliverFillRemaining(
+            child: lastData != null && lastData!.isNotEmpty
+                ? const SizedBox(
+                    height: 80,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _FlexibleSpaceBar extends StatelessWidget {
-  const _FlexibleSpaceBar({required this.isPinned});
-
-  final bool isPinned;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = AppColorScheme.of(context);
-    final textTheme = AppTextTheme.of(context);
-
-    return FlexibleSpaceBar(
-      centerTitle: isPinned,
-      expandedTitleScale: 1.2,
-      titlePadding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 10,
-      ),
-      title: AnimatedAlign(
-        duration: const Duration(milliseconds: 200),
-        alignment: Alignment(
-          isPinned ? 0 : -1,
-          1,
-        ),
-        child: Text(
-          context.l10n.photosScreenTitle,
-          style: textTheme.bold20.copyWith(
-            color: scheme.onBackground,
-          ),
-        ),
+        ],
       ),
     );
   }

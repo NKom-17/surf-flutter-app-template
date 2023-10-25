@@ -6,6 +6,7 @@ import 'package:flutter_template/features/common/mixin/theme_mixin.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_model.dart';
+import 'package:flutter_template/l10n/app_localizations_x.dart';
 import 'package:provider/provider.dart';
 import 'package:union_state/union_state.dart';
 
@@ -13,8 +14,9 @@ import 'package:union_state/union_state.dart';
 PhotosScreenWidgetModel photosScreenWmFactory(
   BuildContext context,
 ) {
+  final networkErrorMessage = context.l10n.networkErrorMessage;
   final scope = context.read<IAppScope>();
-  final model = PhotosScreenModel(scope);
+  final model = PhotosScreenModel(scope, networkErrorMessage);
   return PhotosScreenWidgetModel(model);
 }
 
@@ -27,7 +29,7 @@ class PhotosScreenWidgetModel
   PhotosScreenWidgetModel(super._model);
 
   @override
-  ValueListenable<UnionState<List<PhotosModel?>>> get dataState =>
+  ValueListenable<UnionState<List<PhotosModel>>> get dataState =>
       model.dataState;
 
   @override
@@ -46,5 +48,5 @@ class PhotosScreenWidgetModel
 abstract class IPhotosScreenWidgetModel extends IWidgetModel
     with ThemeIModelMixin {
   /// Interface for data with a loading state
-  ValueListenable<UnionState<List<PhotosModel?>>> get dataState;
+  ValueListenable<UnionState<List<PhotosModel>>> get dataState;
 }

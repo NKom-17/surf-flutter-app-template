@@ -1,5 +1,5 @@
 {
-  "likesOnCard": "{count, plural, =1{{count} like} other{{count} likes}}",
+  "likesOnCard": "{count, plural, =1{{count} лайк} few{{count} лайка} many{{count} лайков} other{{count} лайков}}",
   "@likesOnCard": {
     "placeholders": {
       "count": {
@@ -7,5 +7,6 @@
       }
     }
   },
-  "photosScreenTitle": "Photos"
+  "photosScreenTitle": "Photos",
+  "networkErrorMessage": "Отсутствует интернет-соединение. Проверьте подключение к интернету и повторите попытку."
 }
