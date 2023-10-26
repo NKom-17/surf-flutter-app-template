@@ -21,17 +21,20 @@ class PhotosScreenModel extends ElementaryModel {
   bool _contentIsOver = false;
 
   /// Page loading
-  Future<void> loadPage() async {
-    try {
-      if (_contentIsOver) return;
-      dataState.loading(dataState.value.data);
+  Future<Exception?> loadPage() async {
+    if (!_contentIsOver) {
+      try {
+        dataState.loading(dataState.value.data);
 
-      final response = await _photosRepository.loadingPage(_page);
-      dataState.content(response);
+        final response = await _photosRepository.loadingPage(_page);
+        dataState.content(response);
 
-      response.isNotEmpty ? _page++ : _contentIsOver = true;
-    } on DioError catch (e) {
-      dataState.failure(e.error as Exception?, dataState.value.data);
+        response.isNotEmpty ? _page++ : _contentIsOver = true;
+      } on DioError catch (e) {
+        dataState.failure(e.error as Exception?, dataState.value.data);
+        return e.error as Exception?;
+      }
     }
+    return null;
   }
 }

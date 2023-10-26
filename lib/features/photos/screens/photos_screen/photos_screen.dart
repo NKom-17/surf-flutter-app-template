@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
@@ -11,6 +12,9 @@ import 'package:flutter_template/features/photos/screens/photos_screen/photos_sc
 import 'package:flutter_template/features/photos/widgets/photos_grid.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
 import 'package:union_state/union_state.dart';
+
+/// Access key to the scaffold context for displaying the snack bar.
+final scaffoldKey = GlobalKey<ScaffoldState>();
 
 /// Main widget for PhotosScreen feature.
 @RoutePage(
@@ -26,6 +30,7 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
   @override
   Widget build(IPhotosScreenWidgetModel wm) {
     return Scaffold(
+      key: scaffoldKey,
       body: UnionStateListenableBuilder<List<PhotosModel>>(
         unionStateListenable: wm.dataState,
         builder: (context, data) => _BuilderView(data),
@@ -33,8 +38,11 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
           return _BuilderView(lastData, isLoadingBuilder: true);
         },
         failureBuilder: (context, exception, lastData) {
-          wm.showErrorSnackBar(exception);
-          return _BuilderView(lastData);
+          return _BuilderView(
+            lastData,
+            isFailureBuilder: true,
+            exception: exception,
+          );
         },
       ),
     );
@@ -42,37 +50,59 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
 }
 
 class _BuilderView extends StatelessWidget {
-  const _BuilderView(this.data, {this.isLoadingBuilder = false});
+  const _BuilderView(
+    this.data, {
+    this.isLoadingBuilder = false,
+    this.isFailureBuilder = false,
+    this.exception,
+  });
 
   final List<PhotosModel>? data;
   final bool isLoadingBuilder;
+  final bool isFailureBuilder;
+  final Exception? exception;
 
   @override
   Widget build(BuildContext context) {
     final hasData = data != null && data!.isNotEmpty;
-    return CustomScrollView(
-      physics: hasData ? null : const NeverScrollableScrollPhysics(),
-      slivers: [
-        const _PhotosAppBar(),
-        PhotosGrid(data),
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Visibility(
-            visible: isLoadingBuilder,
-            child: hasData
-                ? const SizedBox(
-                    height: 80,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-          ),
-        ),
-      ],
-    );
+
+    return isFailureBuilder && !hasData
+        ? Padding(
+            padding: const EdgeInsets.all(20),
+            child: Center(
+              child: Text(
+                exception == null
+                    ? 'Неизвестная ошибка'
+                    : exception is SocketException
+                        ? context.l10n.networkErrorMessage
+                        : exception.toString(),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
+        : CustomScrollView(
+            physics: hasData ? null : const NeverScrollableScrollPhysics(),
+            slivers: [
+              const _PhotosAppBar(),
+              PhotosGrid(data),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Visibility(
+                  visible: isLoadingBuilder,
+                  child: hasData
+                      ? const SizedBox(
+                          height: 80,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                ),
+              ),
+            ],
+          );
   }
 }
 

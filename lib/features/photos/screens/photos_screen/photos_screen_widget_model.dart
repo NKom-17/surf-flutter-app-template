@@ -38,25 +38,22 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
   }
 
   /// Load the next page.
-  void loadNextPage() {
-    model.loadPage();
+  Future<void> loadNextPage() async {
+    final exception = await model.loadPage();
+    if (exception != null) showErrorSnackBar(exception);
   }
 
-  @override
+  /// Show a snack bar with an error.
   void showErrorSnackBar(Exception? exception) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              exception is SocketException
-                  ? context.l10n.networkErrorMessage
-                  : exception.toString(),
-            ),
+    ScaffoldMessenger.of(scaffoldKey.currentContext ?? context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            exception is SocketException ? context.l10n.networkErrorMessage : exception.toString(),
           ),
-        );
-    });
+        ),
+      );
   }
 }
 
@@ -64,7 +61,4 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
 abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMixin {
   /// Interface for data with a loading state.
   ValueListenable<UnionState<List<PhotosModel>>> get dataState;
-
-  /// Show a snack bar with an error.
-  void showErrorSnackBar(Exception? exception) {}
 }
