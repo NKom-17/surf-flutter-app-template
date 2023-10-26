@@ -1,14 +1,23 @@
+import 'dart:io';
+
 import 'package:elementary/elementary.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/features/app/di/app_scope.dart';
 import 'package:flutter_template/features/common/mixin/theme_mixin.dart';
+import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_model.dart';
+import 'package:flutter_template/l10n/app_localizations_x.dart';
+import 'package:provider/provider.dart';
+import 'package:union_state/union_state.dart';
 
 /// Factory for [PhotosScreenWidgetModel].
 PhotosScreenWidgetModel photosScreenWmFactory(
   BuildContext context,
 ) {
-  final model = PhotosScreenModel();
+  final scope = context.read<IAppScope>();
+  final model = PhotosScreenModel(scope);
   return PhotosScreenWidgetModel(model);
 }
 
@@ -18,7 +27,41 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
     implements IPhotosScreenWidgetModel {
   /// Create an instance [PhotosScreenWidgetModel].
   PhotosScreenWidgetModel(super._model);
+
+  @override
+  ValueListenable<UnionState<List<PhotosModel>>> get dataState => model.dataState;
+
+  @override
+  void initWidgetModel() {
+    super.initWidgetModel();
+    model.loadPage();
+  }
+
+  /// Load the next page.
+  Future<void> loadNextPage() async {
+    try {
+     await model.loadPage();
+    } on Exception catch (e) {
+      showErrorSnackBar(e);
+    }
+  }
+
+  /// Show a snack bar with an error.
+  void showErrorSnackBar(Exception exception) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            exception is SocketException ? context.l10n.networkErrorMessage : exception.toString(),
+          ),
+        ),
+      );
+  }
 }
 
 /// Interface of [PhotosScreenWidgetModel].
-abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMixin {}
+abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMixin {
+  /// Interface for data with a loading state.
+  ValueListenable<UnionState<List<PhotosModel>>> get dataState;
+}

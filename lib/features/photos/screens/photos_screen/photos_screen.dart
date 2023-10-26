@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
@@ -6,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/assets/text/text_extention.dart';
 import 'package:flutter_template/features/navigation/domain/entity/app_route_names.dart';
+import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_widget_model.dart';
 import 'package:flutter_template/features/photos/widgets/photos_grid.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
+import 'package:union_state/union_state.dart';
 
 /// Main widget for PhotosScreen feature.
 @RoutePage(
@@ -23,14 +26,77 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
 
   @override
   Widget build(IPhotosScreenWidgetModel wm) {
-    return const Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          _PhotosAppBar(),
-          PhotosGrid(),
-        ],
+    return Scaffold(
+      body: UnionStateListenableBuilder<List<PhotosModel>>(
+        unionStateListenable: wm.dataState,
+        builder: (context, data) => _BuilderView(data),
+        loadingBuilder: (_, lastData) {
+          return _BuilderView(lastData, isLoadingBuilder: true);
+        },
+        failureBuilder: (context, exception, lastData) {
+          return _BuilderView(
+            lastData,
+            isFailureBuilder: true,
+            exception: exception,
+          );
+        },
       ),
     );
+  }
+}
+
+class _BuilderView extends StatelessWidget {
+  const _BuilderView(
+    this.data, {
+    this.isLoadingBuilder = false,
+    this.isFailureBuilder = false,
+    this.exception,
+  });
+
+  final List<PhotosModel>? data;
+  final bool isLoadingBuilder;
+  final bool isFailureBuilder;
+  final Exception? exception;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasData = data != null && data!.isNotEmpty;
+
+    return isFailureBuilder && !hasData
+        ? Padding(
+            padding: const EdgeInsets.all(20),
+            child: Center(
+              child: Text(
+                exception == null
+                    ? context.l10n.unknownErrorMessage
+                    : exception is SocketException
+                        ? context.l10n.networkErrorMessage
+                        : exception.toString(),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
+        : CustomScrollView(
+            physics: hasData ? null : const NeverScrollableScrollPhysics(),
+            slivers: [
+              const _PhotosAppBar(),
+              PhotosGrid(data),
+              if (isLoadingBuilder)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: hasData
+                      ? const SizedBox(
+                          height: 80,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                ),
+            ],
+          );
   }
 }
 

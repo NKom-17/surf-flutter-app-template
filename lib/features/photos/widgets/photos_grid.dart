@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/assets/text/text_extention.dart';
+import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
 
 /// [PhotosScreen] content
 class PhotosGrid extends StatelessWidget {
   /// Create an instance [PhotosGrid].
-  const PhotosGrid({super.key});
+  const PhotosGrid(this.models, {super.key});
+
+  /// List of [PhotosModel]
+  final List<PhotosModel?>? models;
 
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       sliver: SliverGrid.builder(
-        itemCount: 10,
+        itemCount: models?.length,
         itemBuilder: (_, index) {
-          return const _PhotoCard();
+          final model = models?[index];
+          if (model != null) return _PhotoCard(model);
+          return null;
         },
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -29,17 +35,15 @@ class PhotosGrid extends StatelessWidget {
 }
 
 class _PhotoCard extends StatelessWidget {
-  const _PhotoCard();
+  const _PhotoCard(this.model);
+
+  final PhotosModel model;
 
   @override
   Widget build(BuildContext context) {
-    const numberOfLikes = 14;
-    const username = 'Christian';
-    final cardShadow = AppColorScheme.of(context).cardShadow;
-
     return Card(
-      elevation: 8,
-      shadowColor: cardShadow,
+      elevation: 10,
+      shadowColor: Color(model.shadowColor),
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -48,7 +52,7 @@ class _PhotoCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Image.network(
-            'https://img.goodfon.com/original/1024x768/c/26/merced-river-yosemite-nationa.jpg',
+            model.photo,
             fit: BoxFit.cover,
           ),
           Padding(
@@ -58,11 +62,11 @@ class _PhotoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const _TextInfoOnCard(
-                  username,
+                _TextInfoOnCard(
+                  model.username,
                   isUsernameText: true,
                 ),
-                _TextInfoOnCard(context.l10n.likesOnCard(numberOfLikes)),
+                _TextInfoOnCard(context.l10n.likesOnCard(model.numberOfLikes)),
               ],
             ),
           ),
