@@ -25,19 +25,27 @@ PhotosScreenWidgetModel photosScreenWmFactory(
 class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenModel>
     with ThemeWMMixin
     implements IPhotosScreenWidgetModel {
-  /// Create an instance [PhotosScreenWidgetModel].
-  PhotosScreenWidgetModel(super._model);
-
   @override
   ValueListenable<UnionState<List<PhotosModel>>> get dataState => model.dataState;
+
+  @override
+  final scrollController = ScrollController();
+
+  /// Create an instance [PhotosScreenWidgetModel].
+  PhotosScreenWidgetModel(super._model);
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
     model.loadPage();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+        loadNextPage();
+      }
+    });
   }
 
-  /// Load the next page.
+  @override
   void loadNextPage() {
     model.loadPage();
   }
@@ -58,12 +66,24 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
         );
     });
   }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 }
 
 /// Interface of [PhotosScreenWidgetModel].
 abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMixin {
   /// Interface for data with a loading state.
   ValueListenable<UnionState<List<PhotosModel>>> get dataState;
+
+  /// Scroll controller for custom scroll view.
+  ScrollController get scrollController;
+
+  /// Load the next page.
+  void loadNextPage() {}
 
   /// Show a snack bar with an error.
   void showErrorSnackBar(Exception? exception) {}

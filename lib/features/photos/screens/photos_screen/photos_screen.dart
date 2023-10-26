@@ -28,37 +28,52 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
     return Scaffold(
       body: UnionStateListenableBuilder<List<PhotosModel>>(
         unionStateListenable: wm.dataState,
-        builder: (context, data) => _BuilderView(data),
+        builder: (_, data) => _BuilderView(data, scrollController: wm.scrollController),
         loadingBuilder: (_, lastData) {
-          return _BuilderView(lastData, isLoadingBuilder: true);
+          return _BuilderView(
+            lastData,
+            scrollController: wm.scrollController,
+            isLoadingBuilder: true,
+          );
         },
-        failureBuilder: (context, exception, lastData) {
+        failureBuilder: (_, exception, lastData) {
           wm.showErrorSnackBar(exception);
-          return _BuilderView(lastData);
+          return _BuilderView(lastData, scrollController: wm.scrollController);
         },
       ),
     );
   }
 }
 
-class _BuilderView extends StatelessWidget {
-  const _BuilderView(this.data, {this.isLoadingBuilder = false});
+class _BuilderView extends StatefulWidget {
+  const _BuilderView(
+    this.data, {
+    required this.scrollController,
+    this.isLoadingBuilder = false,
+  });
 
   final List<PhotosModel>? data;
+  final ScrollController scrollController;
   final bool isLoadingBuilder;
 
   @override
+  State<_BuilderView> createState() => _BuilderViewState();
+}
+
+class _BuilderViewState extends State<_BuilderView> {
+  @override
   Widget build(BuildContext context) {
-    final hasData = data != null && data!.isNotEmpty;
+    final hasData = widget.data != null && widget.data!.isNotEmpty;
     return CustomScrollView(
+      controller: widget.scrollController,
       physics: hasData ? null : const NeverScrollableScrollPhysics(),
       slivers: [
         const _PhotosAppBar(),
-        PhotosGrid(data),
+        PhotosGrid(widget.data),
         SliverFillRemaining(
           hasScrollBody: false,
           child: Visibility(
-            visible: isLoadingBuilder,
+            visible: widget.isLoadingBuilder,
             child: hasData
                 ? const SizedBox(
                     height: 80,

@@ -7,6 +7,7 @@ import 'package:flutter_template/features/photos/domain/mappers/photos_mapper.da
 /// Photos repository
 class PhotosRepository {
   final Dio _dio;
+  final _listPhotos = <PhotosModel>[];
 
   /// Create an instance [PhotosRepository].
   PhotosRepository(this._dio);
@@ -28,10 +29,10 @@ class PhotosRepository {
       dtos.add(PhotosDTO.fromJson(data as Map<String, dynamic>));
     }
 
-    final listPhotosModels = <PhotosModel>[
-      ...dtos.map((element) => element.toDomain()),
-    ];
+    _listPhotos.addAll(
+      dtos.map((element) => element.toDomain()),
+    );
 
-    return listPhotosModels;
+    return _listPhotos;
   }
 }
