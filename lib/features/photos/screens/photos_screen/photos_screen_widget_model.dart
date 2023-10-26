@@ -21,5 +21,4 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
 }
 
 /// Interface of [PhotosScreenWidgetModel].
-abstract class IPhotosScreenWidgetModel extends IWidgetModel
-    with ThemeIModelMixin {}
+abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMixin {}
