@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
@@ -37,57 +38,73 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
           );
         },
         failureBuilder: (_, exception, lastData) {
-          wm.showErrorSnackBar(exception);
-          return _BuilderView(lastData, scrollController: wm.scrollController);
+          return _BuilderView(
+            lastData,
+            isFailureBuilder: true,
+            exception: exception,
+            scrollController: wm.scrollController
+          );
         },
       ),
     );
   }
 }
 
-class _BuilderView extends StatefulWidget {
+class _BuilderView extends StatelessWidget {
   const _BuilderView(
     this.data, {
     required this.scrollController,
     this.isLoadingBuilder = false,
+    this.isFailureBuilder = false,
+    this.exception,
   });
 
   final List<PhotosModel>? data;
   final ScrollController scrollController;
   final bool isLoadingBuilder;
+  final bool isFailureBuilder;
+  final Exception? exception;
 
-  @override
-  State<_BuilderView> createState() => _BuilderViewState();
-}
-
-class _BuilderViewState extends State<_BuilderView> {
   @override
   Widget build(BuildContext context) {
-    final hasData = widget.data != null && widget.data!.isNotEmpty;
-    return CustomScrollView(
-      controller: widget.scrollController,
-      physics: hasData ? null : const NeverScrollableScrollPhysics(),
-      slivers: [
-        const _PhotosAppBar(),
-        PhotosGrid(widget.data),
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Visibility(
-            visible: widget.isLoadingBuilder,
-            child: hasData
-                ? const SizedBox(
-                    height: 80,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-          ),
-        ),
-      ],
-    );
+    final hasData = data != null && data!.isNotEmpty;
+
+    return isFailureBuilder && !hasData
+        ? Padding(
+            padding: const EdgeInsets.all(20),
+            child: Center(
+              child: Text(
+                exception == null
+                    ? context.l10n.unknownErrorMessage
+                    : exception is SocketException
+                        ? context.l10n.networkErrorMessage
+                        : exception.toString(),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
+        : CustomScrollView(
+          controller: widget.scrollController,
+            physics: hasData ? null : const NeverScrollableScrollPhysics(),
+            slivers: [
+              const _PhotosAppBar(),
+              PhotosGrid(data),
+              if (isLoadingBuilder)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: hasData
+                      ? const SizedBox(
+                          height: 80,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                ),
+            ],
+          );
   }
 }
 

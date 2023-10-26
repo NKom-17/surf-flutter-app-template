@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
+
 /// Model for photos.
+@immutable
 class PhotosModel {
   /// Create an instance [PhotosModel].
-  PhotosModel({
+  const PhotosModel({
     required this.photo,
     required this.username,
     required this.numberOfLikes,

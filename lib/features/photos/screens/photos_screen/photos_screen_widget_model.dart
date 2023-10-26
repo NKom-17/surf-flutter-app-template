@@ -45,26 +45,26 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
     });
   }
 
-  @override
-  void loadNextPage() {
-    model.loadPage();
+  /// Load the next page.
+  Future<void> loadNextPage() async {
+    try {
+     await model.loadPage();
+    } on Exception catch (e) {
+      showErrorSnackBar(e);
+    }
   }
 
-  @override
-  void showErrorSnackBar(Exception? exception) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              exception is SocketException
-                  ? context.l10n.networkErrorMessage
-                  : exception.toString(),
-            ),
+  /// Show a snack bar with an error.
+  void showErrorSnackBar(Exception exception) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            exception is SocketException ? context.l10n.networkErrorMessage : exception.toString(),
           ),
-        );
-    });
+        ),
+      );
   }
 
   @override
@@ -81,10 +81,4 @@ abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMix
 
   /// Scroll controller for custom scroll view.
   ScrollController get scrollController;
-
-  /// Load the next page.
-  void loadNextPage() {}
-
-  /// Show a snack bar with an error.
-  void showErrorSnackBar(Exception? exception) {}
 }
