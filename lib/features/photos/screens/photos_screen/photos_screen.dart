@@ -50,8 +50,7 @@ class _PhotosAppBar extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxHeight = constraints.biggest.height;
-              final isNotExpanded =
-                  maxHeight == mediaQuery.padding.top + kToolbarHeight;
+              final isNotExpanded = maxHeight == mediaQuery.padding.top + kToolbarHeight;
 
               return _FlexibleSpaceBar(isNotExpanded: isNotExpanded);
             },
@@ -81,8 +80,7 @@ class _FlexibleSpaceBar extends StatelessWidget {
       ),
       title: AnimatedAlign(
         duration: const Duration(milliseconds: 200),
-        alignment:
-            isNotExpanded ? Alignment.bottomCenter : Alignment.bottomLeft,
+        alignment: isNotExpanded ? Alignment.bottomCenter : Alignment.bottomLeft,
         child: Text(
           context.l10n.photosScreenTitle,
           style: textTheme.bold20.copyWith(

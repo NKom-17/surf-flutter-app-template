@@ -87,9 +87,7 @@ class _TextInfoOnCard extends StatelessWidget {
       text,
       style: textTheme.regular12.copyWith(
         color: scheme.onPrimary,
-        fontWeight: isUsernameText
-            ? textTheme.bold12.fontWeight
-            : textTheme.regular12.fontWeight,
+        fontWeight: isUsernameText ? textTheme.bold12.fontWeight : textTheme.regular12.fontWeight,
       ),
     );
   }
