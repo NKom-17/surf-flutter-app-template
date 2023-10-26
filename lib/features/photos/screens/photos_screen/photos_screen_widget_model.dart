@@ -39,13 +39,16 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
 
   /// Load the next page.
   Future<void> loadNextPage() async {
-    final exception = await model.loadPage();
-    if (exception != null) showErrorSnackBar(exception);
+    try {
+     await model.loadPage();
+    } on Exception catch (e) {
+      showErrorSnackBar(e);
+    }
   }
 
   /// Show a snack bar with an error.
-  void showErrorSnackBar(Exception? exception) {
-    ScaffoldMessenger.of(scaffoldKey.currentContext ?? context)
+  void showErrorSnackBar(Exception exception) {
+    ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(

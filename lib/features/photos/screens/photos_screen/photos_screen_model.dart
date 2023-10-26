@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter_template/features/app/di/app_scope.dart';
@@ -21,20 +23,20 @@ class PhotosScreenModel extends ElementaryModel {
   bool _contentIsOver = false;
 
   /// Page loading
-  Future<Exception?> loadPage() async {
-    if (!_contentIsOver) {
-      try {
-        dataState.loading(dataState.value.data);
+  Future<void> loadPage() async {
+    if (_contentIsOver) return;
+    try {
+      dataState.loading(dataState.value.data);
 
-        final response = await _photosRepository.loadingPage(_page);
-        dataState.content(response);
+      final response = await _photosRepository.loadingPage(_page);
+      dataState.content(response);
 
-        response.isNotEmpty ? _page++ : _contentIsOver = true;
-      } on DioError catch (e) {
-        dataState.failure(e.error as Exception?, dataState.value.data);
-        return e.error as Exception?;
-      }
+      response.isNotEmpty ? _page++ : _contentIsOver = true;
+    } on DioError catch (e) {
+      Exception? handledException;
+      if (e.error is SocketException) handledException = e.error as Exception?;
+      dataState.failure(handledException ?? e, dataState.value.data);
+      rethrow;
     }
-    return null;
   }
 }

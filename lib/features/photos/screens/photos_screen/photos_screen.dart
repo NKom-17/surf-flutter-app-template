@@ -13,9 +13,6 @@ import 'package:flutter_template/features/photos/widgets/photos_grid.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
 import 'package:union_state/union_state.dart';
 
-/// Access key to the scaffold context for displaying the snack bar.
-final scaffoldKey = GlobalKey<ScaffoldState>();
-
 /// Main widget for PhotosScreen feature.
 @RoutePage(
   name: AppRouteNames.photosScreen,
@@ -30,7 +27,6 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
   @override
   Widget build(IPhotosScreenWidgetModel wm) {
     return Scaffold(
-      key: scaffoldKey,
       body: UnionStateListenableBuilder<List<PhotosModel>>(
         unionStateListenable: wm.dataState,
         builder: (context, data) => _BuilderView(data),
@@ -72,7 +68,7 @@ class _BuilderView extends StatelessWidget {
             child: Center(
               child: Text(
                 exception == null
-                    ? 'Неизвестная ошибка'
+                    ? context.l10n.unknownErrorMessage
                     : exception is SocketException
                         ? context.l10n.networkErrorMessage
                         : exception.toString(),
@@ -85,10 +81,9 @@ class _BuilderView extends StatelessWidget {
             slivers: [
               const _PhotosAppBar(),
               PhotosGrid(data),
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Visibility(
-                  visible: isLoadingBuilder,
+              if (isLoadingBuilder)
+                SliverFillRemaining(
+                  hasScrollBody: false,
                   child: hasData
                       ? const SizedBox(
                           height: 80,
@@ -100,7 +95,6 @@ class _BuilderView extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         ),
                 ),
-              ),
             ],
           );
   }
