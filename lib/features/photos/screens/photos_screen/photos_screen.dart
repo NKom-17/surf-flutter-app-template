@@ -29,13 +29,18 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
     return Scaffold(
       body: UnionStateListenableBuilder<List<PhotosModel>>(
         unionStateListenable: wm.dataState,
-        builder: (context, data) => _BuilderView(data),
+        builder: (_, data) => _BuilderView(data, scrollController: wm.scrollController),
         loadingBuilder: (_, lastData) {
-          return _BuilderView(lastData, isLoadingBuilder: true);
-        },
-        failureBuilder: (context, exception, lastData) {
           return _BuilderView(
             lastData,
+            scrollController: wm.scrollController,
+            isLoadingBuilder: true,
+          );
+        },
+        failureBuilder: (_, exception, lastData) {
+          return _BuilderView(
+            lastData,
+            scrollController: wm.scrollController,
             isFailureBuilder: true,
             exception: exception,
           );
@@ -48,12 +53,14 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
 class _BuilderView extends StatelessWidget {
   const _BuilderView(
     this.data, {
+    required this.scrollController,
     this.isLoadingBuilder = false,
     this.isFailureBuilder = false,
     this.exception,
   });
 
   final List<PhotosModel>? data;
+  final ScrollController scrollController;
   final bool isLoadingBuilder;
   final bool isFailureBuilder;
   final Exception? exception;
@@ -77,6 +84,7 @@ class _BuilderView extends StatelessWidget {
             ),
           )
         : CustomScrollView(
+            controller: scrollController,
             physics: hasData ? null : const NeverScrollableScrollPhysics(),
             slivers: [
               const _PhotosAppBar(),

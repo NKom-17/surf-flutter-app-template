@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter_template/features/app/di/app_scope.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
+import 'package:flutter_template/features/photos/domain/mappers/photos_mapper.dart';
 import 'package:flutter_template/features/photos/domain/repository/photos_repository.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 import 'package:union_state/union_state.dart';
@@ -17,8 +18,10 @@ class PhotosScreenModel extends ElementaryModel {
 
   /// Data with a loading state
   final dataState = UnionStateNotifier<List<PhotosModel>>.loading();
+
   final IAppScope _scope;
   late final PhotosRepository _photosRepository;
+  final _listPhotos = <PhotosModel>[];
   int _page = 1;
   bool _contentIsOver = false;
 
@@ -29,7 +32,10 @@ class PhotosScreenModel extends ElementaryModel {
       dataState.loading(dataState.value.data);
 
       final response = await _photosRepository.loadingPage(_page);
-      dataState.content(response);
+      _listPhotos.addAll(
+        response.map((element) => element.toDomain()),
+      );
+      dataState.content(_listPhotos);
 
       response.isNotEmpty ? _page++ : _contentIsOver = true;
     } on DioError catch (e) {
@@ -39,4 +45,10 @@ class PhotosScreenModel extends ElementaryModel {
       rethrow;
     }
   }
+}
+
+/// Extension for getting the current status of the data state.
+extension StatusOfUnionState on UnionState<List<PhotosModel>> {
+  /// The current status of the data is loading.
+  bool get isLoading => this is UnionStateLoading;
 }

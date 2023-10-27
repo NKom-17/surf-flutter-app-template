@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,24 +26,35 @@ PhotosScreenWidgetModel photosScreenWmFactory(
 class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenModel>
     with ThemeWMMixin
     implements IPhotosScreenWidgetModel {
-  /// Create an instance [PhotosScreenWidgetModel].
-  PhotosScreenWidgetModel(super._model);
-
   @override
   ValueListenable<UnionState<List<PhotosModel>>> get dataState => model.dataState;
+
+  @override
+  final scrollController = ScrollController();
+
+  /// Create an instance [PhotosScreenWidgetModel].
+  PhotosScreenWidgetModel(super._model);
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
     model.loadPage();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent &&
+          !dataState.value.isLoading) {
+        loadNextPage();
+      }
+    });
   }
 
   /// Load the next page.
   Future<void> loadNextPage() async {
     try {
-     await model.loadPage();
-    } on Exception catch (e) {
-      showErrorSnackBar(e);
+      await model.loadPage();
+    } on DioError catch (e) {
+      var handledException = Exception(e.error);
+      if (e.error != null && e.error is SocketException) handledException = e.error! as Exception;
+      showErrorSnackBar(handledException);
     }
   }
 
@@ -58,10 +70,19 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
         ),
       );
   }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 }
 
 /// Interface of [PhotosScreenWidgetModel].
 abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMixin {
   /// Interface for data with a loading state.
   ValueListenable<UnionState<List<PhotosModel>>> get dataState;
+
+  /// Scroll controller for custom scroll view.
+  ScrollController get scrollController;
 }
