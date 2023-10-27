@@ -29,11 +29,18 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
     return Scaffold(
       body: UnionStateListenableBuilder<List<PhotosModel>>(
         unionStateListenable: wm.dataState,
-        builder: (_, data) => _BuilderView(data, scrollController: wm.scrollController),
+        builder: (_, data) {
+          return _BuilderView(
+            data,
+            scrollController: wm.scrollController,
+            openDetailsPhoto: wm.openDetailsPhoto,
+          );
+        },
         loadingBuilder: (_, lastData) {
           return _BuilderView(
             lastData,
             scrollController: wm.scrollController,
+            openDetailsPhoto: wm.openDetailsPhoto,
             isLoadingBuilder: true,
           );
         },
@@ -41,6 +48,7 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
           return _BuilderView(
             lastData,
             scrollController: wm.scrollController,
+            openDetailsPhoto: wm.openDetailsPhoto,
             isFailureBuilder: true,
             exception: exception,
           );
@@ -54,6 +62,7 @@ class _BuilderView extends StatelessWidget {
   const _BuilderView(
     this.data, {
     required this.scrollController,
+    required this.openDetailsPhoto,
     this.isLoadingBuilder = false,
     this.isFailureBuilder = false,
     this.exception,
@@ -61,6 +70,7 @@ class _BuilderView extends StatelessWidget {
 
   final List<PhotosModel>? data;
   final ScrollController scrollController;
+  final void Function(PhotosModel model) openDetailsPhoto;
   final bool isLoadingBuilder;
   final bool isFailureBuilder;
   final Exception? exception;
@@ -88,7 +98,7 @@ class _BuilderView extends StatelessWidget {
             physics: hasData ? null : const NeverScrollableScrollPhysics(),
             slivers: [
               const _PhotosAppBar(),
-              PhotosGrid(data),
+              PhotosGrid(data, openDetailsPhoto),
               if (isLoadingBuilder)
                 SliverFillRemaining(
                   hasScrollBody: false,

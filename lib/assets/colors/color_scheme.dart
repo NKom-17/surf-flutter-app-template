@@ -125,8 +125,11 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   /// Tertiary skeleton color.
   final Color skeletonTertiary;
 
-  /// Color of the shadow of the photo card;
-  final Color cardShadow;
+  /// Color of the shadow of the photo card.
+  final Color backgroundErrorImage;
+
+  /// The color of the text in the image.
+  final Color textOnImage;
 
   /// Base light theme version.
   AppColorScheme.light()
@@ -157,7 +160,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
         skeletonSecondary = ColorPalette.cultured,
         skeletonTertiary = ColorPalette.lightSilver,
         tetradicBackground = ColorPalette.lightGreen,
-        cardShadow = ColorPalette.chineseBlack;
+        backgroundErrorImage = ColorPalette.polarGrey,
+        textOnImage = ColorPalette.white;
 
   /// Base dark theme version.
   AppColorScheme.dark()
@@ -188,7 +192,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
         skeletonSecondary = DarkColorPalette.raisinBlack,
         skeletonTertiary = DarkColorPalette.lightSilver,
         tetradicBackground = DarkColorPalette.etonBlue,
-        cardShadow = ColorPalette.chineseBlack;
+        backgroundErrorImage = DarkColorPalette.polarGrey,
+        textOnImage = ColorPalette.white;
 
   const AppColorScheme._({
     required this.primary,
@@ -218,7 +223,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     required this.skeletonSecondary,
     required this.skeletonTertiary,
     required this.tetradicBackground,
-    required this.cardShadow,
+    required this.backgroundErrorImage,
+    required this.textOnImage,
   });
 
   @override
@@ -250,7 +256,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     Color? skeletonSecondary,
     Color? skeletonTertiary,
     Color? tetradicBackground,
-    Color? cardShadow,
+    Color? backgroundErrorImage,
+    Color? textOnImage,
   }) {
     return AppColorScheme._(
       primary: primary ?? this.primary,
@@ -280,7 +287,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
       skeletonSecondary: skeletonSecondary ?? this.skeletonSecondary,
       skeletonTertiary: skeletonTertiary ?? this.skeletonTertiary,
       tetradicBackground: tetradicBackground ?? this.tetradicBackground,
-      cardShadow: cardShadow ?? this.cardShadow,
+      backgroundErrorImage: backgroundErrorImage ?? this.backgroundErrorImage,
+      textOnImage: textOnImage ?? this.textOnImage,
     );
   }
 
@@ -322,7 +330,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
       skeletonSecondary: Color.lerp(skeletonSecondary, other.skeletonSecondary, t)!,
       skeletonTertiary: Color.lerp(skeletonTertiary, other.skeletonTertiary, t)!,
       tetradicBackground: Color.lerp(tetradicBackground, other.tetradicBackground, t)!,
-      cardShadow: Color.lerp(cardShadow, other.cardShadow, t)!,
+      backgroundErrorImage: Color.lerp(backgroundErrorImage, other.backgroundErrorImage, t)!,
+      textOnImage: Color.lerp(textOnImage, other.textOnImage, t)!,
     );
   }
 

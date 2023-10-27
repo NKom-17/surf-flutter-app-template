@@ -10,6 +10,7 @@ UserDataDTO _$UserDataDTOFromJson(Map<String, dynamic> json) => UserDataDTO(
       json['username'] as String,
     );
 
-Map<String, dynamic> _$UserDataDTOToJson(UserDataDTO instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataDTOToJson(UserDataDTO instance) =>
+    <String, dynamic>{
       'username': instance.username,
     };
