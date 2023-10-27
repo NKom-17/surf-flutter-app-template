@@ -1,7 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/features/navigation/domain/entity/details_photo/details_photo_routes.dart';
 import 'package:flutter_template/features/navigation/domain/entity/photos/photos_routes.dart';
+import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
+import 'package:flutter_template/features/photos/screens/details_photo_screen/details_photo_screen.dart';
+import 'package:flutter_template/features/photos/screens/details_photo_screen/details_photo_screen_wm.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_widget_model.dart';
 
@@ -23,6 +27,7 @@ class AppRouter extends _$AppRouter {
   @override
   List<AutoRoute> get routes => [
         photosRoutes,
+        detailsPhotoRoutes,
       ];
 
   AppRouter._();

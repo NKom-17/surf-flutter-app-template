@@ -15,6 +15,17 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    DetailsPhotoRouter.name: (routeData) {
+      final args = routeData.argsAs<DetailsPhotoRouterArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: DetailsPhotoScreen(
+          model: args.model,
+          key: args.key,
+          wmFactory: args.wmFactory,
+        ),
+      );
+    },
     PhotosRouter.name: (routeData) {
       final args = routeData.argsAs<PhotosRouterArgs>(orElse: () => const PhotosRouterArgs());
       return AutoRoutePage<dynamic>(
@@ -24,8 +35,52 @@ abstract class _$AppRouter extends RootStackRouter {
           wmFactory: args.wmFactory,
         ),
       );
-    }
+    },
   };
+}
+
+/// generated route for
+/// [DetailsPhotoScreen]
+class DetailsPhotoRouter extends PageRouteInfo<DetailsPhotoRouterArgs> {
+  DetailsPhotoRouter({
+    required PhotosModel model,
+    Key? key,
+    WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(BuildContext) wmFactory =
+        detailsPhotoScreenWmFactory,
+    List<PageRouteInfo>? children,
+  }) : super(
+          DetailsPhotoRouter.name,
+          args: DetailsPhotoRouterArgs(
+            model: model,
+            key: key,
+            wmFactory: wmFactory,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'DetailsPhotoRouter';
+
+  static const PageInfo<DetailsPhotoRouterArgs> page = PageInfo<DetailsPhotoRouterArgs>(name);
+}
+
+class DetailsPhotoRouterArgs {
+  const DetailsPhotoRouterArgs({
+    required this.model,
+    this.key,
+    this.wmFactory = detailsPhotoScreenWmFactory,
+  });
+
+  final PhotosModel model;
+
+  final Key? key;
+
+  final WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(BuildContext)
+      wmFactory;
+
+  @override
+  String toString() {
+    return 'DetailsPhotoRouterArgs{model: $model, key: $key, wmFactory: $wmFactory}';
+  }
 }
 
 /// generated route for

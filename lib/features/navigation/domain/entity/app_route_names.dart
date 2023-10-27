@@ -8,4 +8,7 @@
 abstract class AppRouteNames {
   /// PhotosScreen route name.
   static const String photosScreen = 'photosRouter';
+
+  /// DetailsPhotoScreen route name.
+  static const String detailsPhotoScreen = 'detailsPhotoRouter';
 }
