@@ -9,21 +9,6 @@ import 'package:flutter_template/features/photos/domain/repository/photos_reposi
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 import 'package:union_state/union_state.dart';
 
-/// Statuses for data states.
-enum DataStateStatus {
-  /// Status of data initialization.
-  initial,
-
-  /// Status of data loading.
-  loading,
-
-  /// Status of data failure.
-  failure,
-
-  /// Status of data success.
-  success,
-}
-
 /// Model for [PhotosScreen].
 class PhotosScreenModel extends ElementaryModel {
   /// Create an instance [PhotosScreenModel].
@@ -33,9 +18,6 @@ class PhotosScreenModel extends ElementaryModel {
 
   /// Data with a loading state
   final dataState = UnionStateNotifier<List<PhotosModel>>.loading();
-
-  /// Current status of the data state
-  DataStateStatus dataStateStatus = DataStateStatus.initial;
 
   final IAppScope _scope;
   late final PhotosRepository _photosRepository;
@@ -47,7 +29,6 @@ class PhotosScreenModel extends ElementaryModel {
   Future<void> loadPage() async {
     if (_contentIsOver) return;
     try {
-      dataStateStatus = DataStateStatus.loading;
       dataState.loading(dataState.value.data);
 
       final response = await _photosRepository.loadingPage(_page);
@@ -57,9 +38,7 @@ class PhotosScreenModel extends ElementaryModel {
       dataState.content(_listPhotos);
 
       response.isNotEmpty ? _page++ : _contentIsOver = true;
-      dataStateStatus = DataStateStatus.success;
     } on DioError catch (e) {
-      dataStateStatus = DataStateStatus.failure;
       Exception? handledException;
       if (e.error is SocketException) handledException = e.error as Exception?;
       dataState.failure(handledException ?? e, dataState.value.data);
@@ -69,7 +48,7 @@ class PhotosScreenModel extends ElementaryModel {
 }
 
 /// Extension for getting the current status of the data state.
-extension DataStateStatusX on DataStateStatus {
+extension StatusOfUnionState on UnionState<List<PhotosModel>> {
   /// The current status of the data is loading.
-  bool get isLoading => this == DataStateStatus.loading;
+  bool get isLoading => this is UnionStateLoading;
 }

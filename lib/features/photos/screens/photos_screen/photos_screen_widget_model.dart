@@ -46,7 +46,7 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
     model.loadPage();
     scrollController.addListener(() {
       if (scrollController.position.pixels == scrollController.position.maxScrollExtent &&
-          !model.dataStateStatus.isLoading) {
+          !dataState.value.isLoading) {
         loadNextPage();
       }
     });
