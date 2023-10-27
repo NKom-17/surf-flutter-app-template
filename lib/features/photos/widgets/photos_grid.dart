@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/assets/text/text_extention.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
+import 'package:flutter_template/features/photos/widgets/photo_from_network.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
 
 /// [PhotosScreen] content
@@ -59,34 +59,11 @@ class _PhotoCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            _ImageOnCard(model),
+            PhotoFromNetwork(model, isPhotoOnCard: true),
             _TextInfoOnCard(model),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ImageOnCard extends StatelessWidget {
-  const _ImageOnCard(this.model);
-
-  final PhotosModel model;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.network(
-      model.photo,
-      loadingBuilder: (context, child, loadingProgress) {
-        return BlurHash(
-          hash: model.blurImage,
-          imageFit: BoxFit.cover,
-          image: model.photo,
-        );
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return const Icon(Icons.image_not_supported_outlined);
-      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
@@ -20,7 +21,7 @@ PhotosScreenWidgetModel photosScreenWmFactory(
 ) {
   final scope = context.read<IAppScope>();
   final model = PhotosScreenModel(scope);
-  final router = scope.router;
+  final router = context.router;
   return PhotosScreenWidgetModel(model, router);
 }
 
@@ -35,7 +36,7 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
   final scrollController = ScrollController();
 
   /// Class that coordinates navigation for the whole app.
-  final AppRouter router;
+  final StackRouter router;
 
   /// Create an instance [PhotosScreenWidgetModel].
   PhotosScreenWidgetModel(super._model, this.router);
@@ -97,5 +98,5 @@ abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMix
   ScrollController get scrollController;
 
   /// Navigate to details photo screen.
-  void openDetailsPhoto(PhotosModel model){}
+  void openDetailsPhoto(PhotosModel model) {}
 }

@@ -7,6 +7,7 @@ import 'package:flutter_template/features/navigation/domain/entity/app_route_nam
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/details_photo_screen/details_photo_screen_wm.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
+import 'package:flutter_template/features/photos/widgets/photo_from_network.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
 
 /// Widget detailed information about a photo from [PhotosScreen].
@@ -53,24 +54,26 @@ class _GoBackButton extends StatelessWidget {
     final scheme = AppColorScheme.of(context);
     final textTheme = AppTextTheme.of(context);
 
-    return Positioned(
-      left: 10,
-      top: 40,
-      child: GestureDetector(
-        onTap: goBack,
-        child: Row(
-          children: [
-            Icon(
-              Icons.keyboard_arrow_left,
-              color: scheme.textOnImage,
-              size: 16,
-            ),
-            const SizedBox(width: 3),
-            Text(
-              context.l10n.backButton,
-              style: textTheme.regular16.copyWith(color: scheme.textOnImage),
-            ),
-          ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 40),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: GestureDetector(
+          onTap: goBack,
+          child: Row(
+            children: [
+              Icon(
+                Icons.keyboard_arrow_left,
+                color: scheme.textOnImage,
+                size: 16,
+              ),
+              const SizedBox(width: 3),
+              Text(
+                context.l10n.backButton,
+                style: textTheme.regular16.copyWith(color: scheme.textOnImage),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -85,31 +88,15 @@ class _Image extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final heightImage = MediaQuery.of(context).size.height * 0.4;
-    final widthImage = MediaQuery.of(context).size.height;
 
     return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        bottomLeft: Radius.circular(30),
-        bottomRight: Radius.circular(30),
+      borderRadius: const BorderRadius.vertical(
+        bottom: Radius.circular(30),
       ),
       child: SizedBox(
         height: heightImage,
-        width: widthImage,
-        child: Image.network(
-          model.photo,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const ColoredBox(
-              color: Colors.grey,
-              child: Center(
-                child: Icon(
-                  Icons.image_not_supported_outlined,
-                  size: 50,
-                ),
-              ),
-            );
-          },
-        ),
+        width: double.infinity,
+        child: PhotoFromNetwork(model),
       ),
     );
   }

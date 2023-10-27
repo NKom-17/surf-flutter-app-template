@@ -27,8 +27,7 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     PhotosRouter.name: (routeData) {
-      final args = routeData.argsAs<PhotosRouterArgs>(
-          orElse: () => const PhotosRouterArgs());
+      final args = routeData.argsAs<PhotosRouterArgs>(orElse: () => const PhotosRouterArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: PhotosScreen(
@@ -46,9 +45,8 @@ class DetailsPhotoRouter extends PageRouteInfo<DetailsPhotoRouterArgs> {
   DetailsPhotoRouter({
     required PhotosModel model,
     Key? key,
-    WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(
-            BuildContext)
-        wmFactory = detailsPhotoScreenWmFactory,
+    WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(BuildContext) wmFactory =
+        detailsPhotoScreenWmFactory,
     List<PageRouteInfo>? children,
   }) : super(
           DetailsPhotoRouter.name,
@@ -62,8 +60,7 @@ class DetailsPhotoRouter extends PageRouteInfo<DetailsPhotoRouterArgs> {
 
   static const String name = 'DetailsPhotoRouter';
 
-  static const PageInfo<DetailsPhotoRouterArgs> page =
-      PageInfo<DetailsPhotoRouterArgs>(name);
+  static const PageInfo<DetailsPhotoRouterArgs> page = PageInfo<DetailsPhotoRouterArgs>(name);
 }
 
 class DetailsPhotoRouterArgs {
@@ -77,8 +74,8 @@ class DetailsPhotoRouterArgs {
 
   final Key? key;
 
-  final WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(
-      BuildContext) wmFactory;
+  final WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(BuildContext)
+      wmFactory;
 
   @override
   String toString() {
@@ -91,9 +88,8 @@ class DetailsPhotoRouterArgs {
 class PhotosRouter extends PageRouteInfo<PhotosRouterArgs> {
   PhotosRouter({
     Key? key,
-    WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(
-            BuildContext)
-        wmFactory = photosScreenWmFactory,
+    WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(BuildContext) wmFactory =
+        photosScreenWmFactory,
     List<PageRouteInfo>? children,
   }) : super(
           PhotosRouter.name,
@@ -106,8 +102,7 @@ class PhotosRouter extends PageRouteInfo<PhotosRouterArgs> {
 
   static const String name = 'PhotosRouter';
 
-  static const PageInfo<PhotosRouterArgs> page =
-      PageInfo<PhotosRouterArgs>(name);
+  static const PageInfo<PhotosRouterArgs> page = PageInfo<PhotosRouterArgs>(name);
 }
 
 class PhotosRouterArgs {
@@ -118,8 +113,8 @@ class PhotosRouterArgs {
 
   final Key? key;
 
-  final WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(
-      BuildContext) wmFactory;
+  final WidgetModel<ElementaryWidget<IWidgetModel>, ElementaryModel> Function(BuildContext)
+      wmFactory;
 
   @override
   String toString() {
