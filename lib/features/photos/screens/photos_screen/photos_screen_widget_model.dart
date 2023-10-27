@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,8 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
     super.initWidgetModel();
     model.loadPage();
     scrollController.addListener(() {
-      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent &&
+          !model.dataStateStatus.isLoading) {
         loadNextPage();
       }
     });
@@ -48,9 +50,11 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
   /// Load the next page.
   Future<void> loadNextPage() async {
     try {
-     await model.loadPage();
-    } on Exception catch (e) {
-      showErrorSnackBar(e);
+      await model.loadPage();
+    } on DioError catch (e) {
+      var handledException = Exception(e.error);
+      if (e.error != null && e.error is SocketException) handledException = e.error! as Exception;
+      showErrorSnackBar(handledException);
     }
   }
 

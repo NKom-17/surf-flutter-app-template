@@ -40,9 +40,9 @@ class PhotosScreen extends ElementaryWidget<IPhotosScreenWidgetModel> {
         failureBuilder: (_, exception, lastData) {
           return _BuilderView(
             lastData,
+            scrollController: wm.scrollController,
             isFailureBuilder: true,
             exception: exception,
-            scrollController: wm.scrollController
           );
         },
       ),
@@ -84,7 +84,7 @@ class _BuilderView extends StatelessWidget {
             ),
           )
         : CustomScrollView(
-          controller: widget.scrollController,
+            controller: scrollController,
             physics: hasData ? null : const NeverScrollableScrollPhysics(),
             slivers: [
               const _PhotosAppBar(),

@@ -9,23 +9,24 @@ import 'package:flutter_template/l10n/app_localizations_x.dart';
 /// [PhotosScreen] content
 class PhotosGrid extends StatelessWidget {
   /// Create an instance [PhotosGrid].
-  const PhotosGrid(this.models, {super.key});
+  const PhotosGrid(this._models, {super.key});
 
   /// List of [PhotosModel]
-  final List<PhotosModel>? models;
+  final List<PhotosModel>? _models;
 
   @override
   Widget build(BuildContext context) {
+    final models = _models ?? [];
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            final model = models?[index];
-            if (model != null) return _PhotoCard(model);
-            return null;
+            final model = models[index];
+            return _PhotoCard(model);
           },
-          childCount: models?.length,
+          childCount: models.length,
         ),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
