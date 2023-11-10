@@ -58,7 +58,7 @@ void main() {
           (_) => Future.value(_photosDTOListMock),
         );
 
-        model.loadPage().then((_) {
+        model.loadPage().whenComplete(() {
           expect(
             model.dataState.value.isContent,
             isTrue,
