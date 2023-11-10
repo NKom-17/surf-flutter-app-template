@@ -102,9 +102,9 @@ void main() {
 
         try {
           await model.loadPage();
-        } on DioError catch (_) {
-          expect(model.dataState.value.isFailure, isTrue);
-        }
+        } on DioError catch (_) {}
+
+        expect(model.dataState.value.isFailure, isTrue);
       });
 
       test('failure with data', () async {
@@ -117,20 +117,20 @@ void main() {
         try {
           await model.loadPage();
           await model.loadPage();
-        } on DioError catch (_) {
-          expect(
-            model.dataState.value.isFailure,
-            isTrue,
-            reason: 'Checking the transition to the failure state',
-          );
+        } on DioError catch (_) {}
 
-          final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
-          expect(
-            model.dataState.value.data,
-            equals(data),
-            reason: 'Checking data retention when an error occurs',
-          );
-        }
+        expect(
+          model.dataState.value.isFailure,
+          isTrue,
+          reason: 'Checking the transition to the failure state',
+        );
+
+        final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
+        expect(
+          model.dataState.value.data,
+          equals(data),
+          reason: 'Checking data retention when an error occurs',
+        );
       });
     });
   });
