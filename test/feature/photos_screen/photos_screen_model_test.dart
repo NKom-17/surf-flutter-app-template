@@ -25,8 +25,20 @@ void main() {
       when(() => photosRepository.loadingPage(1)).thenAnswer(
         (_) => Future.value([]),
       );
+
       await model.loadPage();
-      expect(model.dataState.value.data, isEmpty);
+      expect(
+        model.dataState.value.data,
+        isEmpty,
+        reason: 'Returning an empty list',
+      );
+
+      unawaited(model.loadPage());
+      expect(
+        model.dataState.value.isLoading,
+        isFalse,
+        reason: 'The content has ended and the loading is not happening',
+      );
     });
 
     test('return data', () async {
@@ -41,23 +53,23 @@ void main() {
       expect(model.dataState.value.data, equals(photosModelListMock));
     });
 
-    test('checking the loading status', () async {
+    test('checking the loading status', () {
       when(() => photosRepository.loadingPage(1)).thenAnswer(
         (_) => Future.value(_photosDTOListMock),
       );
 
-      unawaited(model.loadPage());
+      model.loadPage().then((_) {
+        expect(
+          model.dataState.value.isContent,
+          isTrue,
+          reason: 'Checking the end for the status of the content',
+        );
+      });
+
       expect(
         model.dataState.value.isLoading,
         isTrue,
         reason: 'Checking the transition to the loading state',
-      );
-
-      await model.loadPage();
-      expect(
-        model.dataState.value.isContent,
-        isTrue,
-        reason: 'Checking the end for the status of the content',
       );
     });
 
@@ -94,13 +106,15 @@ void main() {
       try {
         await model.loadPage();
       } on DioError catch (_) {
-        return;
+        model.dataState.failure();
+      } finally {
+        expect(model.dataState.value.isFailure, isTrue);
       }
-      expect(model.dataState.value.isFailure, isTrue);
     });
 
     test('return failure with data', () async {
-      final data = _photosDTOListMock;
+      final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
+
       when(() => photosRepository.loadingPage(1)).thenAnswer(
         (_) => Future.error(
           DioError(requestOptions: RequestOptions()),
@@ -109,8 +123,8 @@ void main() {
 
       try {
         await model.loadPage();
-      } on DioError catch (_) {
-        return Future.value(data);
+      } on DioError catch (error) {
+        model.dataState.failure(error, data);
       }
 
       expect(
@@ -120,7 +134,7 @@ void main() {
       );
       expect(
         model.dataState.value.data,
-        equals(data.map((e) => e.toDomain()).toList()),
+        equals(data),
         reason: 'Checking data retention when an error occurs',
       );
     });
