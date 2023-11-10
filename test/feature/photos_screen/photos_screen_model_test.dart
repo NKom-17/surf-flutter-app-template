@@ -33,10 +33,9 @@ void main() {
         reason: 'Returning an empty list',
       );
 
-      unawaited(model.loadPage());
       expect(
-        model.dataState.value.isLoading,
-        isFalse,
+        model.contentIsOver,
+        isTrue,
         reason: 'The content has ended and the loading is not happening',
       );
     });
@@ -49,94 +48,90 @@ void main() {
       await model.loadPage();
       expect(model.dataState.value.isContent, isTrue);
 
-      final photosModelListMock = _photosDTOListMock.map((e) => e.toDomain()).toList();
-      expect(model.dataState.value.data, equals(photosModelListMock));
+      final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
+      expect(model.dataState.value.data, equals(data));
     });
 
-    test('checking the loading status', () {
-      when(() => photosRepository.loadingPage(1)).thenAnswer(
-        (_) => Future.value(_photosDTOListMock),
-      );
+    group('checking the loading status', () {
+      test('loading without data', () {
+        when(() => photosRepository.loadingPage(1)).thenAnswer(
+          (_) => Future.value(_photosDTOListMock),
+        );
 
-      model.loadPage().then((_) {
+        model.loadPage().then((_) {
+          expect(
+            model.dataState.value.isContent,
+            isTrue,
+            reason: 'Checking the end for the status of the content',
+          );
+        });
+
         expect(
-          model.dataState.value.isContent,
+          model.dataState.value.isLoading,
           isTrue,
-          reason: 'Checking the end for the status of the content',
+          reason: 'Checking the transition to the loading state',
         );
       });
 
-      expect(
-        model.dataState.value.isLoading,
-        isTrue,
-        reason: 'Checking the transition to the loading state',
-      );
-    });
+      test('loading with data', () async {
+        when(() => photosRepository.loadingPage(any()))
+            .thenAnswer((_) => Future.value(_photosDTOListMock));
 
-    test('checking the loading status with data', () async {
-      when(() => photosRepository.loadingPage(1))
-          .thenAnswer((_) => Future.value(_photosDTOListMock));
-      when(() => photosRepository.loadingPage(2))
-          .thenAnswer((_) => Future.value(_photosDTOListMock));
-
-      await model.loadPage();
-
-      unawaited(model.loadPage());
-      expect(
-        model.dataState.value.isLoading,
-        isTrue,
-        reason: 'Checking the transition to the loading state',
-      );
-
-      final photosModelListMock = _photosDTOListMock.map((e) => e.toDomain()).toList();
-      expect(
-        model.dataState.value.data,
-        equals(photosModelListMock),
-        reason: 'Checking data retention when loading',
-      );
-    });
-
-    test('return failure', () async {
-      when(() => photosRepository.loadingPage(1)).thenAnswer(
-        (_) => Future.error(
-          DioError(requestOptions: RequestOptions()),
-        ),
-      );
-
-      try {
         await model.loadPage();
-      } on DioError catch (_) {
-        model.dataState.failure();
-      } finally {
-        expect(model.dataState.value.isFailure, isTrue);
-      }
+
+        unawaited(model.loadPage());
+        expect(
+          model.dataState.value.isLoading,
+          isTrue,
+          reason: 'Checking the transition to the loading state',
+        );
+
+        final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
+        expect(
+          model.dataState.value.data,
+          equals(data),
+          reason: 'Checking data retention when loading',
+        );
+      });
     });
 
-    test('return failure with data', () async {
-      final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
+    group('return failure', () {
+      test('failure without data', () async {
+        when(() => photosRepository.loadingPage(1))
+            .thenAnswer((_) => throw DioError(requestOptions: RequestOptions()));
 
-      when(() => photosRepository.loadingPage(1)).thenAnswer(
-        (_) => Future.error(
-          DioError(requestOptions: RequestOptions()),
-        ),
-      );
+        try {
+          await model.loadPage();
+        } on DioError catch (_) {
+          expect(model.dataState.value.isFailure, isTrue);
+        }
+      });
 
-      try {
-        await model.loadPage();
-      } on DioError catch (error) {
-        model.dataState.failure(error, data);
-      }
+      test('failure with data', () async {
+        when(() => photosRepository.loadingPage(1))
+            .thenAnswer((_) => Future.value(_photosDTOListMock));
 
-      expect(
-        model.dataState.value.isFailure,
-        isTrue,
-        reason: 'Checking the transition to the failure state',
-      );
-      expect(
-        model.dataState.value.data,
-        equals(data),
-        reason: 'Checking data retention when an error occurs',
-      );
+        when(() => photosRepository.loadingPage(2))
+            .thenAnswer((_) => throw DioError(requestOptions: RequestOptions()));
+
+        try {
+          await model.loadPage();
+          await model.loadPage();
+        } on DioError catch (_) {
+          expect(
+            model.dataState.value.isFailure,
+            isTrue,
+            reason: 'Checking the transition to the failure state',
+          );
+
+          final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
+          expect(
+            model.dataState.value.data,
+            equals(data),
+            reason: 'Checking data retention when an error occurs',
+          );
+        }
+      });
     });
   });
 }
