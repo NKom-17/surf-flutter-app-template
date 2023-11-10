@@ -100,10 +100,6 @@ void main() {
         when(() => photosRepository.loadingPage(1))
             .thenAnswer((_) => throw DioError(requestOptions: RequestOptions()));
 
-        try {
-          await model.loadPage();
-        } on DioError catch (_) {}
-
         expect(
           () => model.loadPage(),
           throwsA(isA<DioError>()),
