@@ -114,16 +114,11 @@ void main() {
       });
 
       test('failure with data', () async {
+        final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
+        model.dataState.content(data);
+
         when(() => photosRepository.loadingPage(1))
-            .thenAnswer((_) => Future.value(_photosDTOListMock));
-
-        when(() => photosRepository.loadingPage(2))
             .thenAnswer((_) => throw DioError(requestOptions: RequestOptions()));
-
-        try {
-          await model.loadPage();
-          await model.loadPage();
-        } on DioError catch (_) {}
 
         expect(
           () => model.loadPage(),
@@ -137,7 +132,6 @@ void main() {
           reason: 'Checking the transition to the failure state',
         );
 
-        final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
         expect(
           model.dataState.value.data,
           equals(data),
