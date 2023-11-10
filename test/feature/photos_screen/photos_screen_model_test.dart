@@ -105,7 +105,7 @@ void main() {
         } on DioError catch (_) {}
 
         expect(
-          () => photosRepository.loadingPage(1),
+          () => model.loadPage(),
           throwsA(isA<DioError>()),
           reason: 'Checking for throwing an exception',
         );
@@ -130,7 +130,7 @@ void main() {
         } on DioError catch (_) {}
 
         expect(
-          () => photosRepository.loadingPage(2),
+          () => model.loadPage(),
           throwsA(isA<DioError>()),
           reason: 'Checking for throwing an exception',
         );
