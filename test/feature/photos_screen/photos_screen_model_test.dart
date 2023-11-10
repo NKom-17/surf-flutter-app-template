@@ -104,7 +104,17 @@ void main() {
           await model.loadPage();
         } on DioError catch (_) {}
 
-        expect(model.dataState.value.isFailure, isTrue);
+        expect(
+          () => photosRepository.loadingPage(1),
+          throwsA(isA<DioError>()),
+          reason: 'Checking for throwing an exception',
+        );
+
+        expect(
+          model.dataState.value.isFailure,
+          isTrue,
+          reason: 'Checking the transition to the failure state',
+        );
       });
 
       test('failure with data', () async {
@@ -118,6 +128,12 @@ void main() {
           await model.loadPage();
           await model.loadPage();
         } on DioError catch (_) {}
+
+        expect(
+          () => photosRepository.loadingPage(2),
+          throwsA(isA<DioError>()),
+          reason: 'Checking for throwing an exception',
+        );
 
         expect(
           model.dataState.value.isFailure,
