@@ -4,9 +4,7 @@ import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/assets/text/text_extention.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_export.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:union_state/union_state.dart';
 
 import '../../core/utils/test_widget.dart';
@@ -16,7 +14,6 @@ void main() {
   final wm = PhotosScreenWMMock();
 
   testWidget<PhotosScreen>(
-    skip: true,
     screenState: 'initial_unknown_error',
     widgetBuilder: (_) => photosScreen.build(wm),
     setup: (themeData, themeMode, l10n) {
@@ -33,7 +30,6 @@ void main() {
   );
 
   testWidget<PhotosScreen>(
-    skip: true,
     screenState: 'initial_loading',
     widgetBuilder: (_) => photosScreen.build(wm),
     setup: (themeData, themeMode, l10n) {
@@ -47,51 +43,23 @@ void main() {
       when(() => wm.colorScheme).thenReturn(themeData.customColorScheme);
       when(() => wm.l10n).thenReturn(l10n);
     },
-    test: (tester, theme) async {
-      // await tester.pumpWidgetBuilder(photosScreen.build(wm));
-      await tester.pump(const Duration(seconds: 1));
-      // await multiScreenGolden(tester, 'initial_loading');
-    },
   );
 
   testWidget<PhotosScreen>(
-      // skip: true,
-      screenState: 'content',
-      widgetBuilder: (_) => photosScreen.build(wm),
-      setup: (themeData, themeMode, l10n) {
-        when(() => wm.dataState).thenReturn(
-          UnionStateNotifier<List<PhotosModel>>(_photosModelsMock),
-        );
+    screenState: 'content',
+    widgetBuilder: (_) => photosScreen.build(wm),
+    setup: (themeData, themeMode, l10n) {
+      when(() => wm.dataState).thenReturn(
+        UnionStateNotifier<List<PhotosModel>>(_photosModelsMock),
+      );
 
-        when(() => wm.scrollController).thenReturn(ScrollController());
+      when(() => wm.scrollController).thenReturn(ScrollController());
 
-        when(() => wm.textScheme).thenReturn(themeData.customTextTheme);
-        when(() => wm.colorScheme).thenReturn(themeData.customColorScheme);
-        when(() => wm.l10n).thenReturn(l10n);
-      },
-      test: (tester, _) async {
-        return await mockNetworkImages(() async => tester.pumpWidget(photosScreen.build(wm)));
-      });
-
-  testGoldens('golden_content', (tester) async {
-    when(() => wm.dataState).thenReturn(
-      UnionStateNotifier<List<PhotosModel>>(_photosModelsMock),
-    );
-
-    when(() => wm.scrollController).thenReturn(ScrollController());
-
-    when(() => wm.textScheme).thenReturn(TextThemeMock());
-    when(() => wm.colorScheme).thenReturn(ColorSchemeMock());
-    when(() => wm.l10n).thenReturn(LocalizationMock());
-
-    // await tester.pumpWidget(photosScreen.build(wm));
-    await mockNetworkImages(
-      () async => tester.pumpWidget(
-        MaterialApp(home: photosScreen.build(wm)),
-      ),
-    );
-    await multiScreenGolden(tester, 'content');
-  });
+      when(() => wm.textScheme).thenReturn(themeData.customTextTheme);
+      when(() => wm.colorScheme).thenReturn(themeData.customColorScheme);
+      when(() => wm.l10n).thenReturn(l10n);
+    },
+  );
 }
 
 class PhotosScreenWMMock extends Mock implements IPhotosScreenWidgetModel {}

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/assets/text/text_extention.dart';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:meta/meta.dart';
@@ -43,7 +42,7 @@ void testWidget<T extends Widget>({
   bool onlyOneTheme = false,
 }) =>
     testGoldens(
-      desc ?? 'Golden for $T',
+      desc ?? 'Golden for $T${screenState?.isNotEmpty ?? false ? '.$screenState' : ''}',
       skip: skip,
       (tester) async {
         await loadAppFonts();
@@ -123,7 +122,9 @@ String _getGoldenName<T>(
 
   final formattedState = state?.trim().replaceAll(' ', '_');
 
-  return '${includeThemeName ? theme.stringified : 'no_theme'}${formattedState == null ? '.' : '.$formattedState.'}$name';
+  return '$name'
+      '${formattedState == null ? '' : '.$formattedState'}'
+      '${includeThemeName ? '.${theme.stringified}' : ''}';
 }
 
 enum ThemeType {
