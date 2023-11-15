@@ -99,7 +99,10 @@ class _BuilderView extends StatelessWidget {
             physics: hasData ? null : const NeverScrollableScrollPhysics(),
             slivers: [
               const _PhotosAppBar(),
-              PhotosGrid(data, openDetailsPhoto),
+              if (!isLoadingBuilder && !isFailureBuilder && data!.isEmpty)
+                const _EmptyPhotosListWidget()
+              else
+                PhotosGrid(data, openDetailsPhoto),
               if (isLoadingBuilder) _LoadingIndicator(hasData: hasData)
             ],
           );
@@ -196,6 +199,25 @@ class _LoadingIndicatorState extends State<_LoadingIndicator> {
           : Center(
               child: CircularProgressIndicator(value: isTestEnv ? 0.7 : null),
             ),
+    );
+  }
+}
+
+class _EmptyPhotosListWidget extends StatelessWidget {
+  const _EmptyPhotosListWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = AppTextTheme.of(context);
+
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: Center(
+        child: Text(
+          context.l10n.emptyPhotosListText,
+          style: textTheme.medium16,
+        ),
+      ),
     );
   }
 }
