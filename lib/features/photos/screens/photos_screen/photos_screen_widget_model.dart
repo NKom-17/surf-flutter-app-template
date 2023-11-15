@@ -104,5 +104,6 @@ abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMix
   /// Navigate to details photo screen.
   void openDetailsPhoto(PhotosModel model) {}
 
+  /// Localization strings.
   AppLocalizations get l10n;
 }

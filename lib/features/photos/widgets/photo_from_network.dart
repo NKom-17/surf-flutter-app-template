@@ -30,7 +30,7 @@ class _PhotoFromNetworkState extends State<PhotoFromNetwork> {
 
   @override
   Widget build(BuildContext context) {
-    if (isTestEnv) return _ImageErrorWidget(isPhotoOnCard: widget.isPhotoOnCard);
+    if (isTestEnv) return const _TestImage();
 
     return Image.network(
       widget._model.photo,
@@ -41,30 +41,37 @@ class _PhotoFromNetworkState extends State<PhotoFromNetwork> {
           image: widget._model.photo,
         );
       },
-      errorBuilder: (context, error, stackTrace) => _ImageErrorWidget(
-        isPhotoOnCard: widget.isPhotoOnCard,
-      ),
+      errorBuilder: (context, error, stackTrace) {
+        final scheme = AppColorScheme.of(context);
+
+        return ColoredBox(
+          color: scheme.backgroundErrorImage,
+          child: Center(
+            child: Icon(
+              Icons.image_not_supported_outlined,
+              size: widget.isPhotoOnCard ? 24 : 50,
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
-class _ImageErrorWidget extends StatelessWidget {
-  final bool isPhotoOnCard;
-
-  const _ImageErrorWidget({
-    required this.isPhotoOnCard,
-  });
+class _TestImage extends StatelessWidget {
+  const _TestImage();
 
   @override
   Widget build(BuildContext context) {
     final scheme = AppColorScheme.of(context);
 
     return ColoredBox(
-      color: scheme.backgroundErrorImage,
+      color: scheme.primary,
       child: Center(
         child: Icon(
-          Icons.image_not_supported_outlined,
-          size: isPhotoOnCard ? 24 : 50,
+          Icons.photo_outlined,
+          size: 50,
+          color: scheme.onPrimary,
         ),
       ),
     );
