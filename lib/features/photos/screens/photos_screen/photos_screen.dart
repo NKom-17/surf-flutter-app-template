@@ -11,6 +11,7 @@ import 'package:flutter_template/features/photos/domain/entity/models/photos_mod
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_widget_model.dart';
 import 'package:flutter_template/features/photos/widgets/photos_grid.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
+import 'package:flutter_template/util/evn/test_environment_detector.dart';
 import 'package:union_state/union_state.dart';
 
 /// Main widget for PhotosScreen feature.
@@ -98,21 +99,11 @@ class _BuilderView extends StatelessWidget {
             physics: hasData ? null : const NeverScrollableScrollPhysics(),
             slivers: [
               const _PhotosAppBar(),
-              PhotosGrid(data, openDetailsPhoto),
-              if (isLoadingBuilder)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: hasData
-                      ? const SizedBox(
-                          height: 80,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                ),
+              if (!isLoadingBuilder && !isFailureBuilder && data!.isEmpty)
+                const _EmptyPhotosListWidget()
+              else
+                PhotosGrid(data, openDetailsPhoto),
+              if (isLoadingBuilder) _LoadingIndicator(hasData: hasData)
             ],
           );
   }
@@ -170,6 +161,61 @@ class _FlexibleSpaceBar extends StatelessWidget {
           style: textTheme.bold20.copyWith(
             color: scheme.onBackground,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadingIndicator extends StatefulWidget {
+  const _LoadingIndicator({required this.hasData});
+
+  final bool hasData;
+
+  @override
+  State<_LoadingIndicator> createState() => _LoadingIndicatorState();
+}
+
+class _LoadingIndicatorState extends State<_LoadingIndicator> {
+  late final bool isTestEnv;
+
+  @override
+  void initState() {
+    super.initState();
+    isTestEnv = TestEnvironmentDetector.isTestEnvironment;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: widget.hasData
+          ? SizedBox(
+              height: 80,
+              child: Center(
+                child: CircularProgressIndicator(value: isTestEnv ? 0.7 : null),
+              ),
+            )
+          : Center(
+              child: CircularProgressIndicator(value: isTestEnv ? 0.7 : null),
+            ),
+    );
+  }
+}
+
+class _EmptyPhotosListWidget extends StatelessWidget {
+  const _EmptyPhotosListWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = AppTextTheme.of(context);
+
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: Center(
+        child: Text(
+          context.l10n.emptyPhotosListText,
+          style: textTheme.medium16,
         ),
       ),
     );
