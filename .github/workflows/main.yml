@@ -1,0 +1,47 @@
+name: "Main"
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Flutter with exact version
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.13.0"
+
+      - name: Content
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "LICENSE, README.md, example, CHANGELOG.md, CONTRIBUTING.md"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run formatter
+        run: dart format -l 100 --set-exit-if-changed .
+
+      - name: Run analyzer
+        run: flutter analyze --fatal-warnings --fatal-infos .
+
+      - name: Run analyzer
+        run: flutter test
+
+  testing:
+    needs: analysis
+    with:
+      flutter-version: "3.13.0"
