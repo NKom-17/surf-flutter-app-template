@@ -31,7 +31,7 @@ jobs:
           files: "LICENSE, README.md, example, CHANGELOG.md, CONTRIBUTING.md"
 
       - name: Install dependencies
-        run: flutter pub get
+        run: fvm flutter pub get
 
       - name: Run dependency validator
         run: |
