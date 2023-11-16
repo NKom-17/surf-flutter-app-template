@@ -11,32 +11,24 @@ on:
       - '**'
 
 jobs:
-  get_fvm_version:
-    outputs:
-      flutter_version: ${{ steps.fvm_version.outputs.flutterSdkVersion }}
-    name: "Get Flutter version from FVM"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - id: fvm_version
-        uses: zoexx/github-action-json-file-properties@release
-        with:
-          file_path: ".fvm/fvm_config.json"
-
   analysis:
-    needs: get_fvm_version
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Install Flutter with exact version
+        if: ${{ inputs.flutter-version != ''}}
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
+          flutter-version: ${{ inputs.flutter-version }}
+
+      - name: Install Flutter from Stable branch
+        if: ${{ inputs.flutter-version == ''}}
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
 
       - name: Content
         id: check_files
@@ -51,7 +43,7 @@ jobs:
         run: |
           dart pub global activate dependency_validator
           dart pub global run dependency_validator:dependency_validator
-          
+
       - name: Run analyzer
         run: flutter analyze --fatal-warnings --fatal-infos .
 
@@ -64,26 +56,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
   testing:
-    needs: [ get_fvm_version, analysis ]
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Flutter with exact version
-        if: ${{ inputs.flutter-version != ''}}
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        env:
-          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-        if: success()
-        run: |
-          flutter test --coverage
-          bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info
+    needs: analysis
+    uses: surfstudio/flutter-ci-workflows/.github/workflows/testing.yml@main
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
