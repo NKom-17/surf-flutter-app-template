@@ -26,4 +26,22 @@ class PhotosModel {
 
   /// Blur when uploading a photo
   final String blurImage;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    return other is PhotosModel &&
+        other.runtimeType == runtimeType &&
+        other.photo == photo &&
+        other.username == username &&
+        other.numberOfLikes == numberOfLikes &&
+        other.shadowColor == shadowColor &&
+        other.blurImage == blurImage;
+  }
+
+  @override
+  int get hashCode => Object.hash(photo, username, numberOfLikes, shadowColor, blurImage);
 }
