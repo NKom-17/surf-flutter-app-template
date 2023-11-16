@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_template/assets/colors/color_scheme.dart';
 import 'package:flutter_template/assets/text/text_extention.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
+import 'package:flutter_template/features/photos/widgets/photo_from_network.dart';
 import 'package:flutter_template/l10n/app_localizations_x.dart';
 
 /// [PhotosScreen] content
 class PhotosGrid extends StatelessWidget {
   /// Create an instance [PhotosGrid].
-  const PhotosGrid(this._models, {super.key});
+  const PhotosGrid(this._models, this._openDetailsPhoto, {super.key});
 
   /// List of [PhotosModel]
   final List<PhotosModel>? _models;
+  final void Function(PhotosModel model) _openDetailsPhoto;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class PhotosGrid extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
           (context, index) {
             final model = models[index];
-            return _PhotoCard(model);
+            return _PhotoCard(model, _openDetailsPhoto);
           },
           childCount: models.length,
         ),
@@ -39,58 +40,61 @@ class PhotosGrid extends StatelessWidget {
 }
 
 class _PhotoCard extends StatelessWidget {
-  const _PhotoCard(this.model);
+  const _PhotoCard(this.model, this._openDetailsPhoto);
 
   final PhotosModel model;
+  final void Function(PhotosModel model) _openDetailsPhoto;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 10,
-      shadowColor: Color(model.shadowColor),
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.network(
-            model.photo,
-            loadingBuilder: (context, child, loadingProgress) {
-              return BlurHash(
-                hash: model.blurImage,
-                imageFit: BoxFit.cover,
-                image: model.photo,
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.image_not_supported_outlined);
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                _TextInfoOnCard(
-                  model.username,
-                  isUsernameText: true,
-                ),
-                _TextInfoOnCard(context.l10n.likesOnCard(model.numberOfLikes)),
-              ],
-            ),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () => _openDetailsPhoto(model),
+      child: Card(
+        elevation: 10,
+        shadowColor: Color(model.shadowColor),
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            PhotoFromNetwork(model, isPhotoOnCard: true),
+            _TextInfoOnCard(model),
+          ],
+        ),
       ),
     );
   }
 }
 
 class _TextInfoOnCard extends StatelessWidget {
-  const _TextInfoOnCard(this.text, {this.isUsernameText = false});
+  const _TextInfoOnCard(this.model);
+
+  final PhotosModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          _Text(
+            model.username,
+            isUsernameText: true,
+          ),
+          _Text(context.l10n.likesOnCard(model.numberOfLikes)),
+        ],
+      ),
+    );
+  }
+}
+
+class _Text extends StatelessWidget {
+  const _Text(this.text, {this.isUsernameText = false});
 
   final String text;
   final bool isUsernameText;
@@ -103,7 +107,7 @@ class _TextInfoOnCard extends StatelessWidget {
     return Text(
       text,
       style: textTheme.regular12.copyWith(
-        color: scheme.onPrimary,
+        color: scheme.textOnImage,
         fontWeight: isUsernameText ? textTheme.bold12.fontWeight : textTheme.regular12.fontWeight,
       ),
     );

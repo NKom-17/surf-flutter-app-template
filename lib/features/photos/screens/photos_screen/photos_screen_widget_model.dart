@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/features/app/di/app_scope.dart';
 import 'package:flutter_template/features/common/mixin/theme_mixin.dart';
+import 'package:flutter_template/features/navigation/service/router.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_model.dart';
@@ -19,7 +21,8 @@ PhotosScreenWidgetModel photosScreenWmFactory(
 ) {
   final scope = context.read<IAppScope>();
   final model = PhotosScreenModel(scope);
-  return PhotosScreenWidgetModel(model);
+  final router = context.router;
+  return PhotosScreenWidgetModel(model, router);
 }
 
 /// Widget model for [PhotosScreen].
@@ -32,8 +35,11 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
   @override
   final scrollController = ScrollController();
 
+  /// Class that coordinates navigation for the whole app.
+  final StackRouter router;
+
   /// Create an instance [PhotosScreenWidgetModel].
-  PhotosScreenWidgetModel(super._model);
+  PhotosScreenWidgetModel(super._model, this.router);
 
   @override
   void initWidgetModel() {
@@ -72,6 +78,11 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
   }
 
   @override
+  void openDetailsPhoto(PhotosModel model) {
+    router.push(DetailsPhotoRouter(model: model));
+  }
+
+  @override
   void dispose() {
     scrollController.dispose();
     super.dispose();
@@ -85,4 +96,7 @@ abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMix
 
   /// Scroll controller for custom scroll view.
   ScrollController get scrollController;
+
+  /// Navigate to details photo screen.
+  void openDetailsPhoto(PhotosModel model) {}
 }

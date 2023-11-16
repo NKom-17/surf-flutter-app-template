@@ -74,6 +74,11 @@ abstract class DarkColorPalette {
   ///
   /// https://www.color-name.com/hex/000000.
   static const Color black = Colors.black;
+
+  /// Polar Grey
+  ///
+  /// https://www.color-name.com/hex/C1C1BD.
+  static const Color polarGrey = Color(0xFFC1C1BD);
 }
 
 /// IMPORTANT! Don't use this directly for UI elements decorating.
@@ -155,4 +160,9 @@ abstract class ColorPalette {
   ///
   /// https://www.color-name.com/hex/83C000.
   static const Color appleGreen = Color(0xFF83C000);
+
+  /// Polar Grey
+  ///
+  /// https://www.color-name.com/hex/C1C1BD.
+  static const Color polarGrey = Color(0xFFC1C1BD);
 }
