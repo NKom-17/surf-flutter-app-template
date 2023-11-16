@@ -11,7 +11,22 @@ on:
       - '**'
 
 jobs:
+  get_fvm_version:
+    outputs:
+      flutter_version: ${{ steps.fvm_version.outputs.flutterSdkVersion }}
+    name: "Get Flutter version from FVM"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - id: fvm_version
+        uses: zoexx/github-action-json-file-properties@release
+        with:
+          file_path: ".fvm/fvm_config.json"
+
   analysis:
+    needs: get_fvm_version
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +37,7 @@ jobs:
         if: ${{ inputs.flutter-version != ''}}
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ inputs.flutter-version }}
+          flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
 
       - name: Install Flutter from Stable branch
         if: ${{ inputs.flutter-version == ''}}
@@ -56,7 +71,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
   testing:
-    needs: analysis
+    needs: [ get_fvm_version, analysis ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/testing.yml@main
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
