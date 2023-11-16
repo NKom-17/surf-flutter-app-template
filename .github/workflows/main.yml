@@ -26,39 +26,14 @@ jobs:
         with:
           file_path: ".fvm/fvm_config.json"
 
-  fvm_format:
-    needs: get_fvm_version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: "17"
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
-
-      - id: fvm_version
-        uses: zoexx/github-action-json-file-properties@release
-        with:
-          file_path: ".fvm/fvm_config.json"
-
-      - name: Formatting
-        run: |
-          fvm dart format -l 100 .
-
   analysis:
-    needs: [ get_fvm_version, fvm_format ]
+    needs: [ get_fvm_version ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/analysis.yml@main
     with:
       flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
 
   testing:
-    needs: [ get_fvm_version, fvm_format, analysis ]
+    needs: [ get_fvm_version, analysis ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/testing.yml@main
     with:
       flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
@@ -66,7 +41,7 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   build_android:
-    needs: [ get_fvm_version, fvm_format, analysis ]
+    needs: [ get_fvm_version, analysis ]
     runs-on: ubuntu-latest
 
     steps:
@@ -88,7 +63,7 @@ jobs:
         run: flutter build appbundle
 
   build_ios_example:
-    needs: [ get_fvm_version, fvm_format, analysis ]
+    needs: [ get_fvm_version, analysis ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/build_ios_example.yml@main
     with:
       flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
