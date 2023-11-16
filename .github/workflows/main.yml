@@ -42,6 +42,11 @@ jobs:
         with:
           flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
 
+      - id: fvm_version
+        uses: zoexx/github-action-json-file-properties@release
+        with:
+          file_path: ".fvm/fvm_config.json"
+
       - name: Formatting
         run: |
           fvm dart format -l 100 .
