@@ -11,14 +11,8 @@ on:
       - '**'
 
 jobs:
-  fvm_format:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Formatting
-        run: |
-          fvm dart format -l 100 .
+
   get_fvm_version:
-    needs: fvm_format
     outputs:
       flutter_version: ${{ steps.fvm_version.outputs.flutterSdkVersion }}
     name: "Get Flutter version from FVM"
@@ -32,14 +26,29 @@ jobs:
         with:
           file_path: ".fvm/fvm_config.json"
 
+  fvm_format:
+    needs: get_fvm_version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
+
+      - name: Formatting
+        run: |
+          fvm dart format -l 100 .
+
   analysis:
-    needs: [ fvm_format, get_fvm_version ]
+    needs: [ get_fvm_version, fvm_format ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/analysis.yml@main
     with:
       flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
 
   testing:
-    needs: [ fvm_format, get_fvm_version, analysis ]
+    needs: [ get_fvm_version, fvm_format, analysis ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/testing.yml@main
     with:
       flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
@@ -47,7 +56,7 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   build_android:
-    needs: [ fvm_format, get_fvm_version, analysis ]
+    needs: [ get_fvm_version, fvm_format, analysis ]
     runs-on: ubuntu-latest
 
     steps:
@@ -69,7 +78,7 @@ jobs:
         run: flutter build appbundle
 
   build_ios_example:
-    needs: [ fvm_format, get_fvm_version, analysis ]
+    needs: [ get_fvm_version, fvm_format, analysis ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/build_ios_example.yml@main
     with:
       flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
