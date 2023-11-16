@@ -35,16 +35,14 @@ jobs:
   analysis:
     needs: [ fvm_format, get_fvm_version ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/analysis.yml@main
-    workflow_call:
-      inputs:
-        flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
+    with:
+      flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
 
   testing:
     needs: [ fvm_format, get_fvm_version, analysis ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/testing.yml@main
-    workflow_call:
-      inputs:
-        flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
+    with:
+      flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -73,6 +71,5 @@ jobs:
   build_ios_example:
     needs: [ fvm_format, get_fvm_version, analysis ]
     uses: surfstudio/flutter-ci-workflows/.github/workflows/build_ios_example.yml@main
-    workflow_call:
-      inputs:
-        flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
+    with:
+      flutter-version: ${{ needs.get_fvm_version.outputs.flutter_version }}
