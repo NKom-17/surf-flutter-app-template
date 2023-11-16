@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_template/features/app/di/app_scope.dart';
 import 'package:flutter_template/features/common/mixin/theme_mixin.dart';
 import 'package:flutter_template/features/navigation/service/router.dart';
@@ -37,6 +38,9 @@ class PhotosScreenWidgetModel extends WidgetModel<PhotosScreen, PhotosScreenMode
 
   /// Class that coordinates navigation for the whole app.
   final StackRouter router;
+
+  @override
+  AppLocalizations get l10n => context.l10n;
 
   /// Create an instance [PhotosScreenWidgetModel].
   PhotosScreenWidgetModel(super._model, this.router);
@@ -99,4 +103,7 @@ abstract class IPhotosScreenWidgetModel extends IWidgetModel with ThemeIModelMix
 
   /// Navigate to details photo screen.
   void openDetailsPhoto(PhotosModel model) {}
+
+  /// Localization strings.
+  AppLocalizations get l10n;
 }
