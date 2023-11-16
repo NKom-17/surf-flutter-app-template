@@ -22,7 +22,6 @@ dependencies:
   intl: 0.18.1
   json_annotation: 4.8.1
   logger: 1.3.0
-  mocktail_image_network: 0.3.1
   path: 1.8.3
   path_provider: 2.0.14
   provider: 6.0.5
