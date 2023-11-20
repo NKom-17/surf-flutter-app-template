@@ -118,23 +118,25 @@ class _Image extends StatelessWidget {
     final heightImage = MediaQuery.of(context).size.height * 0.4;
     final scheme = AppColorScheme.of(context);
 
-    final favoriteButton = CustomButtonBuilder(
-      tapOnFavoritesButton,
-      icon: Icons.favorite,
-      pressedIcon: Icons.favorite_border,
-      iconColor: scheme.favoriteIcon,
-      iconSize: 22,
-      backgroundColor: scheme.backgroundColorOfButtonsOnImage,
-    ).toBuild();
+    final favoriteButton = (CustomButtonBuilder(tapOnFavoritesButton)
+          ..setIcon(
+            Icons.favorite_border,
+            pressedIcon: Icons.favorite,
+            iconColor: scheme.favoriteIcon,
+            iconSize: 22,
+          )
+          ..backgroundColor = scheme.backgroundColorOfButtonsOnImage)
+        .toBuild();
 
-    final bookmarkButton = CustomButtonBuilder(
-      tapOnBookmarkButton,
-      icon: Icons.bookmark,
-      pressedIcon: Icons.bookmark_border,
-      iconColor: scheme.bookmarkIcon,
-      iconSize: 22,
-      backgroundColor: scheme.backgroundColorOfButtonsOnImage,
-    ).toBuild();
+    final bookmarkButton = (CustomButtonBuilder(tapOnBookmarkButton)
+          ..setIcon(
+            Icons.bookmark_border,
+            pressedIcon: Icons.bookmark,
+            iconColor: scheme.bookmarkIcon,
+            iconSize: 22,
+          )
+          ..backgroundColor = scheme.backgroundColorOfButtonsOnImage)
+        .toBuild();
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(
@@ -213,7 +215,7 @@ class _ButtonOnImage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Icon(
-                buttonIsPressed! ? button.icon : button.pressedIcon,
+                buttonIsPressed! ? button.pressedIcon : button.icon,
                 color: button.iconColor,
                 size: button.iconSize,
               ),
@@ -233,16 +235,19 @@ class _DownloadImage extends StatelessWidget {
     final scheme = AppColorScheme.of(context);
     final textTheme = AppTextTheme.of(context);
 
-    final downloadButton = CustomButtonBuilder(
-      () {},
-      text: context.l10n.downloadImageButton,
-      textColor: scheme.onBackground,
-      textStyle: textTheme.medium14,
-      icon: Icons.download,
-      iconColor: scheme.primary,
-      iconSize: 20,
-      backgroundColor: scheme.background,
-    ).toBuild();
+    final downloadButton = (CustomButtonBuilder(tapOnDownloadButton)
+          ..setText(
+            context.l10n.downloadImageButton,
+            textColor: scheme.onBackground,
+            textStyle: textTheme.medium14,
+          )
+          ..setIcon(
+            Icons.download,
+            iconColor: scheme.primary,
+            iconSize: 20,
+          )
+          ..backgroundColor = scheme.background)
+        .toBuild();
 
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
@@ -253,8 +258,7 @@ class _DownloadImage extends StatelessWidget {
           width: 0.2,
         ),
       ),
-      // TODO(NKom-17): добавить логику скачивания изображения
-      onPressed: () {},
+      onPressed: tapOnDownloadButton,
       icon: Icon(
         downloadButton.icon,
         color: scheme.primary,
@@ -268,4 +272,7 @@ class _DownloadImage extends StatelessWidget {
       ),
     );
   }
+
+  // TODO(NKom-17): добавить логику скачивания изображения
+  void tapOnDownloadButton() {}
 }
