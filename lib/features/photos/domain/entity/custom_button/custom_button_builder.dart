@@ -18,30 +18,6 @@ class CustomButtonBuilder {
   /// Create an instance CustomButtonBuilder.
   CustomButtonBuilder(this._onTap);
 
-  /// Action when you click on the button.
-  void Function() get onTap => _onTap;
-
-  /// The text on the button.
-  String? get text => _text;
-
-  /// The color of the text on the button.
-  Color? get textColor => _textColor;
-
-  /// The text style on the button.
-  TextStyle? get textStyle => _textStyle;
-
-  /// The button icon.
-  IconData? get icon => _icon;
-
-  /// The button icon in the pressed state.
-  IconData? get pressedIcon => _pressedIcon;
-
-  /// The color of the button icon.
-  Color? get iconColor => _iconColor;
-
-  /// The size of the button icon.
-  double? get iconSize => _iconSize;
-
   /// Set parameters for the button text.
   void setText(
     String text, {
@@ -68,6 +44,16 @@ class CustomButtonBuilder {
 
   /// Creating an instance [CustomButton]
   CustomButton toBuild() {
-    return CustomButton(this);
+    return CustomButton().copyWith(
+      onTap: _onTap,
+      text: _text,
+      textColor: _textColor,
+      textStyle: _textStyle,
+      icon: _icon,
+      pressedIcon: _pressedIcon,
+      iconColor: _iconColor,
+      iconSize: _iconSize,
+      backgroundColor: backgroundColor,
+    );
   }
 }
