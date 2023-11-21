@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Custom button model.
 class CustomButton {
-  /// Action when you click on the button.
-  final void Function()? onTap;
+  /// Action when you tap on the button.
+  final VoidCallback? onTap;
 
   /// The text on the button.
   final String? text;
@@ -44,7 +44,7 @@ class CustomButton {
 
   /// Create an instance [CustomButton] with modified parameters.
   CustomButton copyWith({
-    void Function()? onTap,
+    VoidCallback? onTap,
     String? text,
     Color? textColor,
     TextStyle? textStyle,

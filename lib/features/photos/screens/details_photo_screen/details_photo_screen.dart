@@ -110,32 +110,34 @@ class _Image extends StatelessWidget {
   final PhotosModel model;
   final ListenableState<bool> addedToFavorites;
   final ListenableState<bool> addedToBookmarks;
-  final void Function() tapOnFavoritesButton;
-  final void Function() tapOnBookmarkButton;
+  final VoidCallback tapOnFavoritesButton;
+  final VoidCallback tapOnBookmarkButton;
 
   @override
   Widget build(BuildContext context) {
     final heightImage = MediaQuery.of(context).size.height * 0.4;
     final scheme = AppColorScheme.of(context);
 
-    final favoriteButton = (CustomButtonBuilder(tapOnFavoritesButton)
+    final favoriteButton = (CustomButtonBuilder()
+          ..setOnTap(tapOnFavoritesButton)
           ..setIcon(
             Icons.favorite_border,
             pressedIcon: Icons.favorite,
             iconColor: scheme.favoriteIcon,
             iconSize: 22,
           )
-          ..backgroundColor = scheme.backgroundColorOfButtonsOnImage)
+          ..setBackgroundColor(scheme.backgroundColorOfButtonsOnImage))
         .toBuild();
 
-    final bookmarkButton = (CustomButtonBuilder(tapOnBookmarkButton)
+    final bookmarkButton = (CustomButtonBuilder()
+          ..setOnTap(tapOnBookmarkButton)
           ..setIcon(
             Icons.bookmark_border,
             pressedIcon: Icons.bookmark,
             iconColor: scheme.bookmarkIcon,
             iconSize: 22,
           )
-          ..backgroundColor = scheme.backgroundColorOfButtonsOnImage)
+          ..setBackgroundColor(scheme.backgroundColorOfButtonsOnImage))
         .toBuild();
 
     return ClipRRect(
@@ -235,7 +237,8 @@ class _DownloadImage extends StatelessWidget {
     final scheme = AppColorScheme.of(context);
     final textTheme = AppTextTheme.of(context);
 
-    final downloadButton = (CustomButtonBuilder(tapOnDownloadButton)
+    final downloadButton = (CustomButtonBuilder()
+          ..setOnTap(tapOnDownloadButton)
           ..setText(
             context.l10n.downloadImageButton,
             textColor: scheme.onBackground,
@@ -246,7 +249,7 @@ class _DownloadImage extends StatelessWidget {
             iconColor: scheme.primary,
             iconSize: 20,
           )
-          ..backgroundColor = scheme.background)
+          ..setBackgroundColor(scheme.background))
         .toBuild();
 
     return ElevatedButton.icon(

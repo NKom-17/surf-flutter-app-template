@@ -3,20 +3,15 @@ import 'package:flutter_template/features/photos/domain/entity/custom_button/cus
 
 /// A class for creating instances of custom buttons.
 class CustomButtonBuilder {
-  final void Function() _onTap;
-  String? _text;
-  Color? _textColor;
-  TextStyle? _textStyle;
-  IconData? _icon;
-  IconData? _pressedIcon;
-  Color? _iconColor;
-  double? _iconSize;
-
-  /// The background color of the button.
-  Color? backgroundColor;
+  var _customButton = CustomButton();
 
   /// Create an instance CustomButtonBuilder.
-  CustomButtonBuilder(this._onTap);
+  CustomButtonBuilder();
+
+  /// Set the action when you tap on the button.
+  void setOnTap(VoidCallback onTap) {
+    _customButton = _customButton.copyWith(onTap: onTap);
+  }
 
   /// Set parameters for the button text.
   void setText(
@@ -24,9 +19,11 @@ class CustomButtonBuilder {
     Color? textColor,
     TextStyle? textStyle,
   }) {
-    _text = text;
-    _textColor = textColor;
-    _textStyle = textStyle;
+    _customButton = _customButton.copyWith(
+      text: text,
+      textColor: textColor,
+      textStyle: textStyle,
+    );
   }
 
   /// Set parameters for the button icon.
@@ -36,24 +33,21 @@ class CustomButtonBuilder {
     Color? iconColor,
     double? iconSize,
   }) {
-    _icon = icon;
-    _pressedIcon = pressedIcon;
-    _iconColor = iconColor;
-    _iconSize = iconSize;
+    _customButton = _customButton.copyWith(
+      icon: icon,
+      pressedIcon: pressedIcon,
+      iconColor: iconColor,
+      iconSize: iconSize,
+    );
+  }
+
+  /// Set the background color parameter of the button.
+  void setBackgroundColor(Color backgroundColor) {
+    _customButton = _customButton.copyWith(backgroundColor: backgroundColor);
   }
 
   /// Creating an instance [CustomButton]
   CustomButton toBuild() {
-    return CustomButton().copyWith(
-      onTap: _onTap,
-      text: _text,
-      textColor: _textColor,
-      textStyle: _textStyle,
-      icon: _icon,
-      pressedIcon: _pressedIcon,
-      iconColor: _iconColor,
-      iconSize: _iconSize,
-      backgroundColor: backgroundColor,
-    );
+    return _customButton;
   }
 }
