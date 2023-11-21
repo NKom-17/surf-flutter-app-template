@@ -1,54 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/features/photos/domain/entity/custom_button/custom_button_builder.dart';
 
 /// Custom button model.
 class CustomButton {
-  final void Function()? _onTap;
-  final String? _text;
-  final Color? _textColor;
-  final TextStyle? _textStyle;
-  final IconData? _icon;
-  final IconData? _pressedIcon;
-  final Color? _iconColor;
-  final double? _iconSize;
-  final Color? _backgroundColor;
+  /// Action when you tap on the button.
+  final VoidCallback? onTap;
+
+  /// The text on the button.
+  final String? text;
+
+  /// The color of the text on the button.
+  final Color? textColor;
+
+  /// The text style on the button.
+  final TextStyle? textStyle;
+
+  /// The button icon.
+  final IconData? icon;
+
+  /// The button icon in the pressed state.
+  final IconData? pressedIcon;
+
+  /// The color of the button icon.
+  final Color? iconColor;
+
+  /// The size of the button icon.
+  final double? iconSize;
+
+  /// The background color of the button.
+  final Color? backgroundColor;
 
   /// Create an instance CustomButton.
-  CustomButton(CustomButtonBuilder builder)
-      : _onTap = builder.onTap,
-        _text = builder.text,
-        _textColor = builder.textColor,
-        _textStyle = builder.textStyle,
-        _icon = builder.icon,
-        _pressedIcon = builder.pressedIcon,
-        _iconColor = builder.iconColor,
-        _iconSize = builder.iconSize,
-        _backgroundColor = builder.backgroundColor;
+  CustomButton({
+    this.onTap,
+    this.text,
+    this.textColor,
+    this.textStyle,
+    this.icon,
+    this.pressedIcon,
+    this.iconColor,
+    this.iconSize,
+    this.backgroundColor,
+  });
 
-  /// Get an action when you click on the button.
-  void Function()? get onTap => _onTap;
-
-  /// Get the text on the button.
-  String? get text => _text;
-
-  /// Get the color of the text on the button.
-  Color? get textColor => _textColor;
-
-  /// Get the text style on the button.
-  TextStyle? get textStyle => _textStyle;
-
-  /// Get the button icon.
-  IconData? get icon => _icon;
-
-  /// Get the button icon in the pressed state.
-  IconData? get pressedIcon => _pressedIcon;
-
-  /// Get the color of the button icon.
-  Color? get iconColor => _iconColor;
-
-  /// Get the size of the button icon.
-  double? get iconSize => _iconSize;
-
-  /// Get the background color of the button.
-  Color? get backgroundColor => _backgroundColor;
+  /// Create an instance [CustomButton] with modified parameters.
+  CustomButton copyWith({
+    VoidCallback? onTap,
+    String? text,
+    Color? textColor,
+    TextStyle? textStyle,
+    IconData? icon,
+    IconData? pressedIcon,
+    Color? iconColor,
+    double? iconSize,
+    Color? backgroundColor,
+  }) {
+    return CustomButton(
+      onTap: onTap ?? this.onTap,
+      text: text ?? this.text,
+      textColor: textColor ?? this.textColor,
+      textStyle: textStyle ?? this.textStyle,
+      icon: icon ?? this.icon,
+      pressedIcon: pressedIcon ?? this.pressedIcon,
+      iconColor: iconColor ?? this.iconColor,
+      iconSize: iconSize ?? this.iconSize,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+    );
+  }
 }
