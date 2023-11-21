@@ -5,12 +5,16 @@ import 'package:flutter/foundation.dart';
 class PhotosModel {
   /// Create an instance [PhotosModel].
   const PhotosModel({
+    required this.id,
     required this.photo,
     required this.username,
     required this.numberOfLikes,
     required this.shadowColor,
     required this.blurImage,
   });
+
+  /// Photo id
+  final String id;
 
   /// Image
   final String photo;
@@ -34,6 +38,7 @@ class PhotosModel {
     }
 
     return other is PhotosModel &&
+        other.id == id &&
         other.runtimeType == runtimeType &&
         other.photo == photo &&
         other.username == username &&
@@ -43,5 +48,5 @@ class PhotosModel {
   }
 
   @override
-  int get hashCode => Object.hash(photo, username, numberOfLikes, shadowColor, blurImage);
+  int get hashCode => Object.hash(id, photo, username, numberOfLikes, shadowColor, blurImage);
 }

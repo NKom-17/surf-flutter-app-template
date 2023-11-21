@@ -9,6 +9,9 @@ part 'photos_dto.g.dart';
 @immutable
 @JsonSerializable()
 class PhotosDTO {
+  /// Photo id
+  final String id;
+
   /// Links to images
   final UrlsDataDTO urls;
 
@@ -27,6 +30,7 @@ class PhotosDTO {
 
   /// Create an instance [PhotosDTO].
   const PhotosDTO({
+    required this.id,
     required this.urls,
     required this.user,
     required this.likes,

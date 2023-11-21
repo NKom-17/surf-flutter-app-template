@@ -5,12 +5,12 @@ import 'package:flutter_template/api/service/photos/dtos/photos_dto.dart';
 import 'package:flutter_template/api/service/photos/dtos/urls_data_dto.dart';
 import 'package:flutter_template/api/service/photos/dtos/user_data_dto.dart';
 import 'package:flutter_template/features/photos/domain/mappers/photos_mapper.dart';
-import 'package:flutter_template/features/photos/domain/repository/photos_repository.dart';
+import 'package:flutter_template/features/photos/domain/repositories/cached_photos_repository.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockPhotosRepository extends Mock implements PhotosRepository {}
+class MockPhotosRepository extends Mock implements CachedPhotosRepository {}
 
 void main() {
   late PhotosScreenModel model;
@@ -145,6 +145,7 @@ void main() {
 final _photosDTOListMock = List.generate(
   10,
   (index) => const PhotosDTO(
+    id: 'b5j23b52b',
     urls: UrlsDataDTO(
       'https://images.unsplash.com/photo-1695653422715-991ec3a0db7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzMzE5MXwxfDF8YWxsfDF8fHx8fHwyfHwxNjk5NDQ2MTE3fA&ixlib=rb-4.0.3&q=80&w=1080',
     ),

@@ -147,6 +147,7 @@ class PhotosScreenWMMock extends Mock implements IPhotosScreenWidgetModel {}
 final _photosModelsMock = List.generate(
   10,
   (index) => const PhotosModel(
+    id: 'b5j23b52b',
     photo:
         'https://images.unsplash.com/photo-1695653422715-991ec3a0db7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzMzE5MXwxfDF8YWxsfDF8fHx8fHwyfHwxNjk5NDQ2MTE3fA&ixlib=rb-4.0.3&q=80&w=1080',
     username: 'Grab',
