@@ -165,4 +165,9 @@ abstract class ColorPalette {
   ///
   /// https://www.color-name.com/hex/C1C1BD.
   static const Color polarGrey = Color(0xFFC1C1BD);
+
+  /// Middle Yellow
+  ///
+  /// https://www.color-name.com/hex/FFEB00.
+  static const Color middleYellow = Color(0xFFFFEB00);
 }

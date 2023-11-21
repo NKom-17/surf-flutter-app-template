@@ -131,6 +131,15 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   /// The color of the text in the image.
   final Color textOnImage;
 
+  /// Color of the favorites icon.
+  final Color favoriteIcon;
+
+  /// Color of the bookmark icon.
+  final Color bookmarkIcon;
+
+  /// The background color of the buttons in the image.
+  final Color backgroundColorOfButtonsOnImage;
+
   /// Base light theme version.
   AppColorScheme.light()
       : primary = ColorPalette.purple,
@@ -161,7 +170,10 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
         skeletonTertiary = ColorPalette.lightSilver,
         tetradicBackground = ColorPalette.lightGreen,
         backgroundErrorImage = ColorPalette.polarGrey,
-        textOnImage = ColorPalette.white;
+        textOnImage = ColorPalette.white,
+        favoriteIcon = ColorPalette.folly,
+        bookmarkIcon = ColorPalette.middleYellow,
+        backgroundColorOfButtonsOnImage = ColorPalette.polarGrey.withOpacity(0.4);
 
   /// Base dark theme version.
   AppColorScheme.dark()
@@ -193,7 +205,10 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
         skeletonTertiary = DarkColorPalette.lightSilver,
         tetradicBackground = DarkColorPalette.etonBlue,
         backgroundErrorImage = DarkColorPalette.polarGrey,
-        textOnImage = ColorPalette.white;
+        textOnImage = ColorPalette.white,
+        favoriteIcon = ColorPalette.folly,
+        bookmarkIcon = ColorPalette.middleYellow,
+        backgroundColorOfButtonsOnImage = ColorPalette.polarGrey.withOpacity(0.4);
 
   const AppColorScheme._({
     required this.primary,
@@ -225,6 +240,9 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     required this.tetradicBackground,
     required this.backgroundErrorImage,
     required this.textOnImage,
+    required this.favoriteIcon,
+    required this.bookmarkIcon,
+    required this.backgroundColorOfButtonsOnImage,
   });
 
   @override
@@ -258,6 +276,9 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     Color? tetradicBackground,
     Color? backgroundErrorImage,
     Color? textOnImage,
+    Color? favoriteIcon,
+    Color? bookmarkIcon,
+    Color? backgroundColorOfButtonsOnImage,
   }) {
     return AppColorScheme._(
       primary: primary ?? this.primary,
@@ -289,6 +310,10 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
       tetradicBackground: tetradicBackground ?? this.tetradicBackground,
       backgroundErrorImage: backgroundErrorImage ?? this.backgroundErrorImage,
       textOnImage: textOnImage ?? this.textOnImage,
+      favoriteIcon: favoriteIcon ?? this.favoriteIcon,
+      bookmarkIcon: bookmarkIcon ?? this.bookmarkIcon,
+      backgroundColorOfButtonsOnImage:
+          backgroundColorOfButtonsOnImage ?? this.backgroundColorOfButtonsOnImage,
     );
   }
 
@@ -332,6 +357,10 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
       tetradicBackground: Color.lerp(tetradicBackground, other.tetradicBackground, t)!,
       backgroundErrorImage: Color.lerp(backgroundErrorImage, other.backgroundErrorImage, t)!,
       textOnImage: Color.lerp(textOnImage, other.textOnImage, t)!,
+      favoriteIcon: Color.lerp(favoriteIcon, other.favoriteIcon, t)!,
+      bookmarkIcon: Color.lerp(bookmarkIcon, other.bookmarkIcon, t)!,
+      backgroundColorOfButtonsOnImage:
+          Color.lerp(backgroundColorOfButtonsOnImage, other.backgroundColorOfButtonsOnImage, t)!,
     );
   }
 

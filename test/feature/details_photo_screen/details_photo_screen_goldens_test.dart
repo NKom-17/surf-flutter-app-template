@@ -1,3 +1,4 @@
+import 'package:elementary/elementary.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 import 'package:flutter_template/features/photos/screens/details_photo_screen/details_photo_screen_export.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_export.dart';
@@ -17,6 +18,8 @@ void main() {
       when(() => wm.textScheme).thenReturn(themeData.customTextTheme);
       when(() => wm.colorScheme).thenReturn(themeData.customColorScheme);
       when(() => wm.l10n).thenReturn(l10n);
+      when(() => wm.addedToFavorites).thenAnswer((_) => StateNotifier<bool>(initValue: false));
+      when(() => wm.addedToBookmarks).thenAnswer((_) => StateNotifier<bool>(initValue: false));
     },
   );
 }
