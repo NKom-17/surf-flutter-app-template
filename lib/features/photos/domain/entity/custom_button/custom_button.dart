@@ -30,7 +30,7 @@ class CustomButton {
   final Color? backgroundColor;
 
   /// Create an instance CustomButton.
-  CustomButton({
+  const CustomButton({
     this.onTap,
     this.text,
     this.textColor,
