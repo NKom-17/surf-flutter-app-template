@@ -7,6 +7,7 @@ part of 'photos_dto.dart';
 // **************************************************************************
 
 PhotosDTO _$PhotosDTOFromJson(Map<String, dynamic> json) => PhotosDTO(
+      id: json['id'] as String,
       urls: UrlsDataDTO.fromJson(json['urls'] as Map<String, dynamic>),
       user: UserDataDTO.fromJson(json['user'] as Map<String, dynamic>),
       likes: json['likes'] as int,
@@ -15,6 +16,7 @@ PhotosDTO _$PhotosDTOFromJson(Map<String, dynamic> json) => PhotosDTO(
     );
 
 Map<String, dynamic> _$PhotosDTOToJson(PhotosDTO instance) => <String, dynamic>{
+      'id': instance.id,
       'urls': instance.urls,
       'user': instance.user,
       'likes': instance.likes,

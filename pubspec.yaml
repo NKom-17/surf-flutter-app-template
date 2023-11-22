@@ -11,6 +11,7 @@ dependencies:
   auto_route: 7.4.0
   collection: 1.17.2
   dio: 5.1.1
+  drift: 2.13.1
   elementary: 2.0.0
   firebase_core: 2.15.0
   firebase_crashlytics: 3.1.0
@@ -25,12 +26,14 @@ dependencies:
   path_provider: 2.0.14
   provider: 6.0.5
   shared_preferences: 2.1.0
+  sqlite3_flutter_libs: 0.5.18
   surf_logger: 1.1.0
   union_state: 0.0.1
 
 dev_dependencies:
   auto_route_generator: 7.1.1
   build_runner: 2.3.3
+  drift_dev: 2.13.2
   flutter_launcher_icons: 0.13.1
   flutter_native_splash: 2.3.1
   flutter_test:

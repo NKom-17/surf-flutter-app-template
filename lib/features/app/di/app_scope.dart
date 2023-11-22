@@ -6,7 +6,9 @@ import 'package:flutter_template/config/environment/environment.dart';
 import 'package:flutter_template/features/common/service/theme/theme_service.dart';
 import 'package:flutter_template/features/common/service/theme/theme_service_impl.dart';
 import 'package:flutter_template/features/navigation/service/router.dart';
-import 'package:flutter_template/features/photos/domain/repository/photos_repository.dart';
+import 'package:flutter_template/features/photos/databases/database.dart';
+import 'package:flutter_template/features/photos/domain/repositories/cached_photos_repository.dart';
+import 'package:flutter_template/features/photos/domain/repositories/photos_repository.dart';
 import 'package:flutter_template/persistence/storage/theme_storage/theme_storage.dart';
 import 'package:flutter_template/persistence/storage/theme_storage/theme_storage_impl.dart';
 import 'package:flutter_template/util/default_error_handler.dart';
@@ -23,6 +25,8 @@ class AppScope implements IAppScope {
   late final AppRouter _router;
   late final IThemeService _themeService;
   late final PhotosRepository _photosRepository;
+  late final Database _db;
+  late final CachedPhotosRepository _cachedPhotosRepository;
 
   @override
   late VoidCallback applicationRebuilder;
@@ -45,6 +49,12 @@ class AppScope implements IAppScope {
   @override
   PhotosRepository get photosRepository => _photosRepository;
 
+  @override
+  Database get db => _db;
+
+  @override
+  CachedPhotosRepository get cachedPhotosRepository => _cachedPhotosRepository;
+
   late IThemeModeStorage _themeModeStorage;
 
   /// Create an instance [AppScope].
@@ -57,6 +67,8 @@ class AppScope implements IAppScope {
     _errorHandler = DefaultErrorHandler();
     _router = AppRouter.instance();
     _themeModeStorage = ThemeModeStorageImpl(_sharedPreferences);
+    _db = Database();
+    _cachedPhotosRepository = CachedPhotosRepository(_photosRepository, _db);
   }
 
   @override
@@ -131,4 +143,10 @@ abstract class IAppScope {
 
   /// Photos repository.
   PhotosRepository get photosRepository;
+
+  /// Database.
+  Database get db;
+
+  /// Cached photos repository.
+  CachedPhotosRepository get cachedPhotosRepository;
 }
