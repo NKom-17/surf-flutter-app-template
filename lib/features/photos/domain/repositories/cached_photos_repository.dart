@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_template/api/service/photos/dtos/photos_dto.dart';
 import 'package:flutter_template/features/photos/databases/database.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
+import 'package:flutter_template/features/photos/domain/mappers/cached_photos_mapper.dart';
 import 'package:flutter_template/features/photos/domain/mappers/photos_mapper.dart';
 import 'package:flutter_template/features/photos/domain/repositories/photos_repository.dart';
 
@@ -27,14 +28,64 @@ class CachedPhotosRepository implements PhotosRepository {
         );
   }
 
+  /// Отчистка базы данных
+  Future<void> clearCachedPhotosDB() async {
+    final cachedPhotosFromDB = await getCachedPhotosDB();
+    for (final cachedPhoto in cachedPhotosFromDB) {
+      await _db.delete(_db.cachedPhotosTable).delete(cachedPhoto.toDatabase());
+    }
+  }
+
   @override
   Future<List<PhotosDTO>> loadingPage(int page) async {
-    final response = await _photosRepository.loadingPage(page);
-    for (final element in response) {
-      await insertInCachedPhotosDB(element.toDomain());
-    }
+    final cachedPhotosFromDB = await getCachedPhotosDB();
 
-    final photosFromDB = await getCachedPhotosDB();
-    return Future.value(photosFromDB.map((element) => element.toDTO()).toList());
+    if (page == 1) {
+      final response = await _photosRepository
+          .loadingPage(page)
+          .then((value) => value.map((element) => element.toDomain()).toList());
+
+      final firstPageFromDB =
+          cachedPhotosFromDB.where(response.contains).map((element) => element.toDTO()).toList();
+
+      if (firstPageFromDB.length == 10) {
+        return Future.value(firstPageFromDB);
+      } else {
+        await clearCachedPhotosDB();
+
+        for (final element in response) {
+          await insertInCachedPhotosDB(element);
+        }
+
+        final firstPageCachedPhotosDB = await getCachedPhotosDB()
+            .then((value) => value.map((element) => element.toDTO()).toList());
+        return Future.value(firstPageCachedPhotosDB);
+      }
+    } else {
+      if (cachedPhotosFromDB.length >= page * 10) {
+        return Future.value(
+          cachedPhotosFromDB
+              .map((element) => element.toDTO())
+              .toList()
+              .sublist((page - 1) * 10, page * 10),
+        );
+      } else {
+        final response = await _photosRepository
+            .loadingPage(page)
+            .then((value) => value.map((element) => element.toDomain()).toList());
+
+        for (final element in response) {
+          await insertInCachedPhotosDB(element);
+        }
+
+        final photosFromDB = await getCachedPhotosDB();
+
+        final newPagePhotosDTOFromDB = [
+          ...photosFromDB.where(response.contains).map((element) => element.toDTO())
+        ];
+
+        return Future.value(newPagePhotosDTOFromDB);
+      }
+    }
   }
 }

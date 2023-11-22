@@ -8,7 +8,7 @@
     }
   },
   "photosScreenTitle": "Photos",
-  "emptyPhotosListText": "Список фотографй пуст",
+  "emptyPhotosListText": "Список фотографий пуст",
   "networkErrorMessage": "Отсутствует интернет-соединение. Проверьте подключение к интернету и повторите попытку.",
   "unknownErrorMessage": "Неизвестная ошибка. Попробуйте еще раз.",
   "backButton": "Назад",
