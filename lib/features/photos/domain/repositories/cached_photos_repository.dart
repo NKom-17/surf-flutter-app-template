@@ -11,13 +11,15 @@ class CachedPhotosRepository {
   const CachedPhotosRepository(this._db);
 
   /// Получение фотографий из базы данных
-  Future<List<PhotosModel>> getCachedPhotosDB(int fromIndex, [int? count]) async {
-    final cachedPhotosDB = await _db.select(_db.cachedPhotosTable).get();
+  Future<List<PhotosModel>> getCachedPhotosDB(int count, [int fromIndex = 0]) async {
+    final cachedPhotosDB = await (_db.select(_db.cachedPhotosTable)
+          ..limit(
+            count,
+            offset: fromIndex,
+          ))
+        .get();
 
-    return cachedPhotosDB
-        .sublist(fromIndex, count != null ? fromIndex + count : null)
-        .map(CachedPhotosMapper.fromDatabase)
-        .toList();
+    return cachedPhotosDB.map(CachedPhotosMapper.fromDatabase).toList();
   }
 
   /// Получение количества фотографий в базе данных
@@ -36,9 +38,10 @@ class CachedPhotosRepository {
 
   /// Отчистка базы данных
   Future<void> clearCachedPhotosDB() async {
-    final cachedPhotosFromDB = await getCachedPhotosDB(0);
+    final cachedPhotosFromDB = await _db.select(_db.cachedPhotosTable).get();
+
     for (final cachedPhoto in cachedPhotosFromDB) {
-      await _db.delete(_db.cachedPhotosTable).delete(CachedPhotosMapper.toDatabase(cachedPhoto));
+      await _db.delete(_db.cachedPhotosTable).delete(cachedPhoto);
     }
   }
 }

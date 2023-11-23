@@ -17,8 +17,7 @@ class ProxyPhotosRepository implements PhotosRepository {
     if (page == 1) {
       final response = await _photosRepository.loadingPage(page);
 
-      final cachedPhotosFromDB =
-          await _cachedPhotosRepository.getCachedPhotosDB(0, countPhotosOnPage);
+      final cachedPhotosFromDB = await _cachedPhotosRepository.getCachedPhotosDB(countPhotosOnPage);
 
       if (listEquals(cachedPhotosFromDB, response)) {
         return cachedPhotosFromDB;
@@ -35,8 +34,8 @@ class ProxyPhotosRepository implements PhotosRepository {
       final countPhotosInDB = await _cachedPhotosRepository.getLengthCachedPhotosDB();
       if (countPhotosInDB >= page * countPhotosOnPage) {
         return _cachedPhotosRepository.getCachedPhotosDB(
-          (page - 1) * countPhotosOnPage,
           countPhotosOnPage,
+          (page - 1) * countPhotosOnPage,
         );
       } else {
         final response = await _photosRepository.loadingPage(page);

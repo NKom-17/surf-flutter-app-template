@@ -22,14 +22,11 @@ class PhotosRepository {
       },
     );
 
-    final models = <PhotosModel>[];
-    final responseList = response.data as List<dynamic>;
-    for (final data in responseList) {
-      models.add(PhotosMapper.fromDTO(
-        PhotosDTO.fromJson(data as Map<String, dynamic>),
-      ));
-    }
+    final models = response.data as List<dynamic>;
 
-    return models;
+    return models
+        .map((data) => PhotosDTO.fromJson(data as Map<String, dynamic>))
+        .map(PhotosMapper.fromDTO)
+        .toList();
   }
 }
