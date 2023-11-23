@@ -13,12 +13,14 @@ class ProxyPhotosRepository implements PhotosRepository {
 
   @override
   Future<List<PhotosModel>> loadingPage(int page) async {
-    final cachedPhotosFromDB = await _cachedPhotosRepository.getCachedPhotosDB();
-
+    const countPhotosOnPage = 10;
     if (page == 1) {
       final response = await _photosRepository.loadingPage(page);
 
-      if (cachedPhotosFromDB.length == 10 && listEquals(cachedPhotosFromDB, response)) {
+      final cachedPhotosFromDB =
+          await _cachedPhotosRepository.getCachedPhotosDB(0, countPhotosOnPage);
+
+      if (listEquals(cachedPhotosFromDB, response)) {
         return cachedPhotosFromDB;
       } else {
         await _cachedPhotosRepository.clearCachedPhotosDB();
@@ -27,12 +29,15 @@ class ProxyPhotosRepository implements PhotosRepository {
           await _cachedPhotosRepository.insertInCachedPhotosDB(element);
         }
 
-        final firstPageCachedPhotosDB = await _cachedPhotosRepository.getCachedPhotosDB();
-        return firstPageCachedPhotosDB;
+        return response;
       }
     } else {
-      if (cachedPhotosFromDB.length >= page * 10) {
-        return cachedPhotosFromDB.sublist((page - 1) * 10, page * 10);
+      final countPhotosInDB = await _cachedPhotosRepository.getLengthCachedPhotosDB();
+      if (countPhotosInDB >= page * countPhotosOnPage) {
+        return _cachedPhotosRepository.getCachedPhotosDB(
+          (page - 1) * countPhotosOnPage,
+          countPhotosOnPage,
+        );
       } else {
         final response = await _photosRepository.loadingPage(page);
 
