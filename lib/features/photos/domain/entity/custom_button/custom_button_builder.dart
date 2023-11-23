@@ -3,7 +3,7 @@ import 'package:flutter_template/features/photos/domain/entity/custom_button/cus
 
 /// A class for creating instances of custom buttons.
 class CustomButtonBuilder {
-  var _customButton = CustomButton();
+  var _customButton = const CustomButton();
 
   /// Create an instance CustomButtonBuilder.
   CustomButtonBuilder();

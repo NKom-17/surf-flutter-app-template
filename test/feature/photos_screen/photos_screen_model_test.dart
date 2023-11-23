@@ -1,16 +1,13 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_template/api/service/photos/dtos/photos_dto.dart';
-import 'package:flutter_template/api/service/photos/dtos/urls_data_dto.dart';
-import 'package:flutter_template/api/service/photos/dtos/user_data_dto.dart';
-import 'package:flutter_template/features/photos/domain/mappers/photos_mapper.dart';
-import 'package:flutter_template/features/photos/domain/repository/photos_repository.dart';
+import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
+import 'package:flutter_template/features/photos/domain/repositories/proxy_photos_repository.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockPhotosRepository extends Mock implements PhotosRepository {}
+class MockPhotosRepository extends Mock implements ProxyPhotosRepository {}
 
 void main() {
   late PhotosScreenModel model;
@@ -42,20 +39,19 @@ void main() {
 
     test('return data', () async {
       when(() => photosRepository.loadingPage(1)).thenAnswer(
-        (_) => Future.value(_photosDTOListMock),
+        (_) => Future.value(_photosListMock),
       );
 
       await model.loadPage();
       expect(model.dataState.value.isContent, isTrue);
 
-      final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
-      expect(model.dataState.value.data, equals(data));
+      expect(model.dataState.value.data, equals(_photosListMock));
     });
 
     group('checking the loading status', () {
       test('loading without data', () {
         when(() => photosRepository.loadingPage(1)).thenAnswer(
-          (_) => Future.value(_photosDTOListMock),
+          (_) => Future.value(_photosListMock),
         );
 
         model.loadPage().whenComplete(() {
@@ -75,7 +71,7 @@ void main() {
 
       test('loading with data', () async {
         when(() => photosRepository.loadingPage(any()))
-            .thenAnswer((_) => Future.value(_photosDTOListMock));
+            .thenAnswer((_) => Future.value(_photosListMock));
 
         await model.loadPage();
 
@@ -86,10 +82,9 @@ void main() {
           reason: 'Checking the transition to the loading state',
         );
 
-        final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
         expect(
           model.dataState.value.data,
-          equals(data),
+          equals(_photosListMock),
           reason: 'Checking data retention when loading',
         );
       });
@@ -114,8 +109,7 @@ void main() {
       });
 
       test('failure with data', () async {
-        final data = _photosDTOListMock.map((e) => e.toDomain()).toList();
-        model.dataState.content(data);
+        model.dataState.content(_photosListMock);
 
         when(() => photosRepository.loadingPage(1))
             .thenAnswer((_) => throw DioError(requestOptions: RequestOptions()));
@@ -134,7 +128,7 @@ void main() {
 
         expect(
           model.dataState.value.data,
-          equals(data),
+          equals(_photosListMock),
           reason: 'Checking data retention when an error occurs',
         );
       });
@@ -142,15 +136,15 @@ void main() {
   });
 }
 
-final _photosDTOListMock = List.generate(
+final _photosListMock = List.generate(
   10,
-  (index) => const PhotosDTO(
-    urls: UrlsDataDTO(
-      'https://images.unsplash.com/photo-1695653422715-991ec3a0db7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzMzE5MXwxfDF8YWxsfDF8fHx8fHwyfHwxNjk5NDQ2MTE3fA&ixlib=rb-4.0.3&q=80&w=1080',
-    ),
-    user: UserDataDTO('Grab'),
-    likes: 11,
-    color: '#c0c0c0',
+  (index) => const PhotosModel(
+    id: 'b5j23b52b',
+    photo:
+        'https://images.unsplash.com/photo-1695653422715-991ec3a0db7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzMzE5MXwxfDF8YWxsfDF8fHx8fHwyfHwxNjk5NDQ2MTE3fA&ixlib=rb-4.0.3&q=80&w=1080',
+    username: 'Grab',
+    numberOfLikes: 11,
+    shadowColor: 0xFFc0c0c0,
     blurImage: 'LWJIIe9F-qV[~XRjS0RibcoyRQRi',
   ),
 );

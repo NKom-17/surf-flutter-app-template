@@ -4,19 +4,19 @@ import 'package:dio/dio.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
-import 'package:flutter_template/features/photos/domain/mappers/photos_mapper.dart';
-import 'package:flutter_template/features/photos/domain/repository/photos_repository.dart';
+import 'package:flutter_template/features/photos/domain/repositories/proxy_photos_repository.dart';
 import 'package:flutter_template/features/photos/screens/photos_screen/photos_screen.dart';
 import 'package:union_state/union_state.dart';
 
 /// Model for [PhotosScreen].
 class PhotosScreenModel extends ElementaryModel {
   /// Create an instance [PhotosScreenModel].
-  PhotosScreenModel(this._photosRepository);
+  PhotosScreenModel(this._proxyPhotosRepository);
 
   /// Data with a loading state
   final dataState = UnionStateNotifier<List<PhotosModel>>.loading();
-  final PhotosRepository _photosRepository;
+  final ProxyPhotosRepository _proxyPhotosRepository;
+
   final _listPhotos = <PhotosModel>[];
   int _page = 1;
 
@@ -30,10 +30,9 @@ class PhotosScreenModel extends ElementaryModel {
     try {
       dataState.loading(dataState.value.data);
 
-      final response = await _photosRepository.loadingPage(_page);
-      _listPhotos.addAll(
-        response.map((element) => element.toDomain()),
-      );
+      final response = await _proxyPhotosRepository.loadingPage(_page);
+      _listPhotos.addAll(response);
+
       dataState.content(_listPhotos);
 
       response.isNotEmpty ? _page++ : contentIsOver = true;
