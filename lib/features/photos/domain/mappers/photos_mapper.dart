@@ -1,17 +1,19 @@
 import 'package:flutter_template/api/service/photos/dtos/photos_dto.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 
-/// Extension [PhotosDTO].
-extension PhotosDTOToDomain on PhotosDTO {
-  /// Converting DTO to model.
-  PhotosModel toDomain() {
+/// Mapper [PhotosDTO].
+class PhotosMapper {
+  const PhotosMapper._();
+
+  /// Converting [PhotosDTO] to [PhotosModel].
+  static PhotosModel fromDTO(PhotosDTO dto) {
     return PhotosModel(
-      id: id,
-      photo: urls.regular,
-      username: user.username,
-      numberOfLikes: likes,
-      shadowColor: int.parse('0xFF${color.substring(1)}'),
-      blurImage: blurImage,
+      id: dto.id,
+      photo: dto.urls.regular,
+      username: dto.user.username,
+      numberOfLikes: dto.likes,
+      shadowColor: int.parse('0xFF${dto.color.substring(1)}'),
+      blurImage: dto.blurImage,
     );
   }
 }

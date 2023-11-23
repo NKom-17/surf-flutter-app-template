@@ -9,6 +9,7 @@ import 'package:flutter_template/features/navigation/service/router.dart';
 import 'package:flutter_template/features/photos/databases/database.dart';
 import 'package:flutter_template/features/photos/domain/repositories/cached_photos_repository.dart';
 import 'package:flutter_template/features/photos/domain/repositories/photos_repository.dart';
+import 'package:flutter_template/features/photos/domain/repositories/proxy_photos_repository.dart';
 import 'package:flutter_template/persistence/storage/theme_storage/theme_storage.dart';
 import 'package:flutter_template/persistence/storage/theme_storage/theme_storage_impl.dart';
 import 'package:flutter_template/util/default_error_handler.dart';
@@ -27,6 +28,7 @@ class AppScope implements IAppScope {
   late final PhotosRepository _photosRepository;
   late final Database _db;
   late final CachedPhotosRepository _cachedPhotosRepository;
+  late final ProxyPhotosRepository _proxyPhotosRepository;
 
   @override
   late VoidCallback applicationRebuilder;
@@ -55,6 +57,9 @@ class AppScope implements IAppScope {
   @override
   CachedPhotosRepository get cachedPhotosRepository => _cachedPhotosRepository;
 
+  @override
+  ProxyPhotosRepository get proxyPhotosRepository => _proxyPhotosRepository;
+
   late IThemeModeStorage _themeModeStorage;
 
   /// Create an instance [AppScope].
@@ -68,7 +73,8 @@ class AppScope implements IAppScope {
     _router = AppRouter.instance();
     _themeModeStorage = ThemeModeStorageImpl(_sharedPreferences);
     _db = Database();
-    _cachedPhotosRepository = CachedPhotosRepository(_photosRepository, _db);
+    _cachedPhotosRepository = CachedPhotosRepository(_db);
+    _proxyPhotosRepository = ProxyPhotosRepository(_photosRepository, _cachedPhotosRepository);
   }
 
   @override
@@ -149,4 +155,7 @@ abstract class IAppScope {
 
   /// Cached photos repository.
   CachedPhotosRepository get cachedPhotosRepository;
+
+  /// Proxy for photos repository.
+  ProxyPhotosRepository get proxyPhotosRepository;
 }

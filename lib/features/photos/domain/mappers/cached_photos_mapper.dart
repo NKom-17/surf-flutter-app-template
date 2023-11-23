@@ -1,50 +1,31 @@
-import 'package:flutter_template/api/service/photos/dtos/photos_dto.dart';
-import 'package:flutter_template/api/service/photos/dtos/urls_data_dto.dart';
-import 'package:flutter_template/api/service/photos/dtos/user_data_dto.dart';
 import 'package:flutter_template/features/photos/databases/database.dart';
 import 'package:flutter_template/features/photos/domain/entity/models/photos_model.dart';
 
-/// Extension [PhotosModel].
-extension PhotosModelToDTO on PhotosModel {
-  /// Converting model to DTO.
-  PhotosDTO toDTO() {
-    return PhotosDTO(
-      id: id,
-      urls: UrlsDataDTO(photo),
-      user: UserDataDTO(username),
-      likes: numberOfLikes,
-      color: '#${shadowColor.toString().substring(5)}',
-      blurImage: blurImage,
-    );
-  }
-}
+/// Mapper [CachedPhotosTableData].
+class CachedPhotosMapper {
+  const CachedPhotosMapper._();
 
-/// Extension [PhotosModel].
-extension PhotosModelToDatabase on PhotosModel {
-  /// Converting PhotosModel to CachedPhotosTableData.
-  CachedPhotosTableData toDatabase() {
+  /// Converting [PhotosModel] to [CachedPhotosTableData].
+  static CachedPhotosTableData toDatabase(PhotosModel model) {
     return CachedPhotosTableData(
-      id: id,
-      username: username,
-      photo: photo,
-      numberOfLikes: numberOfLikes,
-      shadowColor: shadowColor,
-      blurImage: blurImage,
+      id: model.id,
+      username: model.username,
+      photo: model.photo,
+      numberOfLikes: model.numberOfLikes,
+      shadowColor: model.shadowColor,
+      blurImage: model.blurImage,
     );
   }
-}
 
-/// Extension [CachedPhotosTableData].
-extension CachedPhotosTableDataToDomain on CachedPhotosTableData {
-  /// Converting CachedPhotosTableData to PhotosModel.
-  PhotosModel tableToDomain() {
+  /// Converting [CachedPhotosTableData] to [PhotosModel].
+  static PhotosModel fromDatabase(CachedPhotosTableData tableData) {
     return PhotosModel(
-      id: id,
-      username: username,
-      photo: photo,
-      numberOfLikes: numberOfLikes,
-      shadowColor: shadowColor,
-      blurImage: blurImage,
+      id: tableData.id,
+      username: tableData.username,
+      photo: tableData.photo,
+      numberOfLikes: tableData.numberOfLikes,
+      shadowColor: tableData.shadowColor,
+      blurImage: tableData.blurImage,
     );
   }
 }

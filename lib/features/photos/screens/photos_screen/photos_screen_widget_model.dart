@@ -21,7 +21,7 @@ PhotosScreenWidgetModel photosScreenWmFactory(
   BuildContext context,
 ) {
   final scope = context.read<IAppScope>();
-  final model = PhotosScreenModel(scope.cachedPhotosRepository);
+  final model = PhotosScreenModel(scope.proxyPhotosRepository);
   final router = context.router;
   return PhotosScreenWidgetModel(model, router);
 }
