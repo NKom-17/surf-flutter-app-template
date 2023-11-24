@@ -3,6 +3,8 @@ import 'package:flutter_template/features/photos/domain/entity/models/photos_mod
 import 'package:flutter_template/features/photos/domain/repositories/cached_photos_repository.dart';
 import 'package:flutter_template/features/photos/domain/repositories/photos_repository.dart';
 
+const _countPhotosOnPage = 10;
+
 /// Interface for page loading strategies.
 abstract class ILoadingPageStrategy {
   /// Create an instance [ILoadingPageStrategy].
@@ -24,7 +26,7 @@ class FirstPageStrategy implements ILoadingPageStrategy {
   Future<List<PhotosModel>> loadingPage(int page) async {
     final response = await _photosRepository.loadingPage(page);
 
-    final cachedPhotosFromDB = await _cachedPhotosRepository.getCachedPhotosDB(10);
+    final cachedPhotosFromDB = await _cachedPhotosRepository.getCachedPhotosDB(_countPhotosOnPage);
 
     if (listEquals(cachedPhotosFromDB, response)) {
       return cachedPhotosFromDB;
@@ -47,13 +49,12 @@ class NextPageStrategy implements ILoadingPageStrategy {
 
   @override
   Future<List<PhotosModel>> loadingPage(int page) async {
-    const countPhotosOnPage = 10;
     final countPhotosInDB = await _cachedPhotosRepository.getLengthCachedPhotosDB();
 
-    if (countPhotosInDB >= page * countPhotosOnPage) {
+    if (countPhotosInDB >= page * _countPhotosOnPage) {
       return _cachedPhotosRepository.getCachedPhotosDB(
-        countPhotosOnPage,
-        (page - 1) * countPhotosOnPage,
+        _countPhotosOnPage,
+        (page - 1) * _countPhotosOnPage,
       );
     } else {
       final response = await _photosRepository.loadingPage(page);
