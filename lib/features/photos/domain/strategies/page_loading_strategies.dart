@@ -4,15 +4,16 @@ import 'package:flutter_template/features/photos/domain/repositories/cached_phot
 import 'package:flutter_template/features/photos/domain/repositories/photos_repository.dart';
 
 /// Interface for page loading strategies.
-abstract class LoadingPageStrategy {
-  const LoadingPageStrategy._();
+abstract class ILoadingPageStrategy {
+  /// Create an instance [ILoadingPageStrategy].
+  const ILoadingPageStrategy();
 
   /// Page loading.
   Future<List<PhotosModel>> loadingPage(int page);
 }
 
 /// First page loading strategy.
-class FirstPageStrategy implements LoadingPageStrategy {
+class FirstPageStrategy implements ILoadingPageStrategy {
   final PhotosRepository _photosRepository;
   final CachedPhotosRepository _cachedPhotosRepository;
 
@@ -29,10 +30,7 @@ class FirstPageStrategy implements LoadingPageStrategy {
       return cachedPhotosFromDB;
     } else {
       await _cachedPhotosRepository.clearCachedPhotosDB();
-
-      for (final element in response) {
-        await _cachedPhotosRepository.insertInCachedPhotosDB(element);
-      }
+      await _cachedPhotosRepository.insertInCachedPhotosDB(response);
 
       return response;
     }
@@ -40,7 +38,7 @@ class FirstPageStrategy implements LoadingPageStrategy {
 }
 
 /// Strategy for loading the next pages.
-class NextPageStrategy implements LoadingPageStrategy {
+class NextPageStrategy implements ILoadingPageStrategy {
   final PhotosRepository _photosRepository;
   final CachedPhotosRepository _cachedPhotosRepository;
 
@@ -59,12 +57,32 @@ class NextPageStrategy implements LoadingPageStrategy {
       );
     } else {
       final response = await _photosRepository.loadingPage(page);
-
-      for (final element in response) {
-        await _cachedPhotosRepository.insertInCachedPhotosDB(element);
-      }
+      await _cachedPhotosRepository.insertInCachedPhotosDB(response);
 
       return response;
+    }
+  }
+}
+
+/// Page loader.
+class PageLoader {
+  final PhotosRepository _photosRepository;
+  final CachedPhotosRepository _cachedPhotosRepository;
+
+  /// Create an instance [PageLoader].
+  const PageLoader(
+    this._photosRepository,
+    this._cachedPhotosRepository,
+  );
+
+  /// Selecting a strategy.
+  Future<List<PhotosModel>> loadingPage(int page) {
+    if (page == 1) {
+      final strategy = FirstPageStrategy(_photosRepository, _cachedPhotosRepository);
+      return strategy.loadingPage(page);
+    } else {
+      final strategy = NextPageStrategy(_photosRepository, _cachedPhotosRepository);
+      return strategy.loadingPage(page);
     }
   }
 }

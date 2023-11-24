@@ -28,12 +28,15 @@ class CachedPhotosRepository {
     return cachedPhotosDB.length;
   }
 
-  /// Добавление фото в базу данных
-  Future<void> insertInCachedPhotosDB(PhotosModel photo) async {
-    await _db.into(_db.cachedPhotosTable).insert(
-          CachedPhotosMapper.toDatabase(photo),
-          mode: InsertMode.insertOrReplace,
-        );
+  /// Добавление фотографий в базу данных
+  Future<void> insertInCachedPhotosDB(List<PhotosModel> photos) async {
+    await _db.batch((batch) {
+      batch.insertAll(
+        _db.cachedPhotosTable,
+        photos.map(CachedPhotosMapper.toDatabase),
+        mode: InsertMode.insertOrReplace,
+      );
+    });
   }
 
   /// Отчистка базы данных
