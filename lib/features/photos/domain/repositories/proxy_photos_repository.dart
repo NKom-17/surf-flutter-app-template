@@ -13,7 +13,12 @@ class ProxyPhotosRepository implements PhotosRepository {
 
   @override
   Future<List<PhotosModel>> loadingPage(int page) async {
-    final pageLoader = PageLoader(_photosRepository, _cachedPhotosRepository);
-    return pageLoader.loadingPage(page);
+    final ILoadingPageStrategy strategy;
+    if (page == 1) {
+      strategy = FirstPageStrategy(_photosRepository, _cachedPhotosRepository);
+    } else {
+      strategy = NextPageStrategy(_photosRepository, _cachedPhotosRepository);
+    }
+    return strategy.loadingPage(page);
   }
 }

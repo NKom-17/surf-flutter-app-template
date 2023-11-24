@@ -63,26 +63,3 @@ class NextPageStrategy implements ILoadingPageStrategy {
     }
   }
 }
-
-/// Page loader.
-class PageLoader {
-  final PhotosRepository _photosRepository;
-  final CachedPhotosRepository _cachedPhotosRepository;
-
-  /// Create an instance [PageLoader].
-  const PageLoader(
-    this._photosRepository,
-    this._cachedPhotosRepository,
-  );
-
-  /// Selecting a strategy.
-  Future<List<PhotosModel>> loadingPage(int page) {
-    if (page == 1) {
-      final strategy = FirstPageStrategy(_photosRepository, _cachedPhotosRepository);
-      return strategy.loadingPage(page);
-    } else {
-      final strategy = NextPageStrategy(_photosRepository, _cachedPhotosRepository);
-      return strategy.loadingPage(page);
-    }
-  }
-}
