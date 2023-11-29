@@ -30,7 +30,9 @@ class PhotosScreenModel extends ElementaryModel {
     try {
       dataState.loading(dataState.value.data);
 
+      await _proxyPhotosRepository.isReady;
       final response = await _proxyPhotosRepository.loadingPage(_page);
+
       _listPhotos.addAll(response);
 
       dataState.content(_listPhotos);
@@ -42,6 +44,12 @@ class PhotosScreenModel extends ElementaryModel {
       dataState.failure(handledException ?? e, dataState.value.data);
       rethrow;
     }
+  }
+
+  @override
+  void dispose() {
+    _proxyPhotosRepository.disposeIsolate();
+    super.dispose();
   }
 }
 
