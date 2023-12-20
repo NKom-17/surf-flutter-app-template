@@ -18,6 +18,10 @@ void main() {
   });
 
   group('loading a new page', () {
+    when(() => photosRepository.isReady).thenAnswer(
+      (_) => Future<void>(() {}),
+    );
+
     test('return empty list', () async {
       when(() => photosRepository.loadingPage(1)).thenAnswer(
         (_) => Future.value([]),
@@ -93,7 +97,7 @@ void main() {
     group('return failure', () {
       test('failure without data', () async {
         when(() => photosRepository.loadingPage(1))
-            .thenAnswer((_) => throw DioError(requestOptions: RequestOptions()));
+            .thenThrow(DioError(requestOptions: RequestOptions()));
 
         expect(
           () => model.loadPage(),
@@ -101,6 +105,7 @@ void main() {
           reason: 'Checking for throwing an exception',
         );
 
+        await Future.delayed(const Duration(seconds: 2));
         expect(
           model.dataState.value.isFailure,
           isTrue,
@@ -112,7 +117,7 @@ void main() {
         model.dataState.content(_photosListMock);
 
         when(() => photosRepository.loadingPage(1))
-            .thenAnswer((_) => throw DioError(requestOptions: RequestOptions()));
+            .thenThrow(DioError(requestOptions: RequestOptions()));
 
         expect(
           () => model.loadPage(),
@@ -120,6 +125,7 @@ void main() {
           reason: 'Checking for throwing an exception',
         );
 
+        await Future.delayed(const Duration(seconds: 2));
         expect(
           model.dataState.value.isFailure,
           isTrue,
